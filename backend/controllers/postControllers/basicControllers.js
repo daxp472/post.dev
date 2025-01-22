@@ -1,86 +1,180 @@
 import Post from "../../models/post.model.js";
 
 export const postRouteEntry = (req, res) => {
-    res.send("Hello This is the post api by POST.dev");
-}
+    res.status(200).json({
+        success: true,
+        message: "Welcome to the POST.dev API",
+        timestamp: Date.now()
+    });
+};
 
 export const getAllPosts = async (req, res) => {
     try {
         const allPosts = await Post.find();
+
+        // Check if there are any posts
+        if (!allPosts || allPosts.length === 0) {
+            return res.status(404).json({
+                success: false,
+                message: "No posts found",
+                timestamp: Date.now()
+            });
+        }
+
         res.status(200).json({
-            success : true,
-            message : "Posts fetched successfully",
-            data : allPosts,
-            timestamp : Date.now()
+            success: true,
+            message: "Posts fetched successfully",
+            data: allPosts,
+            count: allPosts.length,
+            timestamp: Date.now()
         });
     } catch (error) {
         res.status(500).json({
-            success : false,
-            message : "Internal Server Error",
-            error : error.message,
-            timestamp : Date.now()
+            success: false,
+            message: "Error fetching posts",
+            error: error.message,
+            timestamp: Date.now()
         });
     }
-}
+};
 
 export const createNewPost = async (req, res) => {
     try {
         const { user_id, title, content, tags } = req.body;
-        const newPost = await Post.create({ user_id, title, content, tags })
+
+        // Validate required fields
+        if (!user_id || !title || !content) {
+            return res.status(400).json({
+                success: false,
+                message: "Missing required fields",
+                details: {
+                    user_id: user_id ? "✓" : "✗ required",
+                    title: title ? "✓" : "✗ required",
+                    content: content ? "✓" : "✗ required"
+                },
+                timestamp: Date.now()
+            });
+        }
+
+        // Validate ObjectId format for user_id
+        if (!user_id.match(/^[0-9a-fA-F]{24}$/)) {
+            return res.status(400).json({
+                success: false,
+                message: "Invalid user ID format",
+                timestamp: Date.now()
+            });
+        }
+
+        const newPost = await Post.create({ user_id, title, content, tags });
+        
         res.status(201).json({
-            success : true,
-            message : "Post created successfully",
-            data : newPost,
-            timestamp : Date.now()
+            success: true,
+            message: "Post created successfully",
+            data: newPost,
+            timestamp: Date.now()
         });
     } catch (error) {
         res.status(500).json({
-            success : false,
-            message : "Internal Server Error",
-            error : error.message,
-            timestamp : Date.now()
+            success: false,
+            message: "Error creating post",
+            error: error.message,
+            timestamp: Date.now()
         });
     }
-}
+};
 
 export const updatePost = async (req, res) => {
     try {
         const { postid } = req.params;
+        const { title, content, tags } = req.body;
 
-        const {title, content, tags } = req.body;
-        const updatedPost = await Post.findByIdAndUpdate(postid, { title, content, tags }, { new: true });
+        // Validate postid format
+        if (!postid.match(/^[0-9a-fA-F]{24}$/)) {
+            return res.status(400).json({
+                success: false,
+                message: "Invalid post ID format",
+                timestamp: Date.now()
+            });
+        }
+
+        // Check if at least one field to update is provided
+        if (!title && !content && !tags) {
+            return res.status(400).json({
+                success: false,
+                message: "No update fields provided",
+                timestamp: Date.now()
+            });
+        }
+
+        const updatedPost = await Post.findByIdAndUpdate(
+            postid, 
+            { title, content, tags }, 
+            { 
+                new: true,
+                runValidators: true
+            }
+        );
+
+        if (!updatedPost) {
+            return res.status(404).json({
+                success: false,
+                message: "Post not found",
+                timestamp: Date.now()
+            });
+        }
+
         res.status(200).json({
-            success : true,
-            message : "Post updated successfully",
-            data : updatedPost,
-            timestamp : Date.now()
+            success: true,
+            message: "Post updated successfully",
+            data: updatedPost,
+            timestamp: Date.now()
         });
     } catch (error) {
         res.status(500).json({
-            success : false,
-            message : "Internal Server Error",
-            error : error.message,
-            timestamp : Date.now()
+            success: false,
+            message: "Error updating post",
+            error: error.message,
+            timestamp: Date.now()
         });
     }
-}
+};
 
 export const deletePost = async (req, res) => {
     try {
         const { postid } = req.params;
-        await Post.findByIdAndDelete(postid);
+
+        // Validate postid format
+        if (!postid.match(/^[0-9a-fA-F]{24}$/)) {
+            return res.status(400).json({
+                success: false,
+                message: "Invalid post ID format",
+                timestamp: Date.now()
+            });
+        }
+
+        const deletedPost = await Post.findByIdAndDelete(postid);
+
+        if (!deletedPost) {
+            return res.status(404).json({
+                success: false,
+                message: "Post not found",
+                timestamp: Date.now()
+            });
+        }
+
         res.status(200).json({
-            success : true,
-            message : "Post deleted successfully"
+            success: true,
+            message: "Post deleted successfully",
+            timestamp: Date.now()
         });
     } catch (error) {
         res.status(500).json({
-            success : false,
-            message : "Internal Server Error",
-            error : error.message,
-            timestamp : Date.now()
+            success: false,
+            message: "Error deleting post",
+            error: error.message,
+            timestamp: Date.now()
         });
     }
-}
+};
 
 
