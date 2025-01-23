@@ -3,7 +3,7 @@ import dotenv from "dotenv";
 import connectDB from "./config/mongodbConfig.js";
 import cors from "cors";
 import postRoutes from "./routes/postRoutes.js";
-
+import userRoutes from "./routes/userRoutes.js";
 
 dotenv.config();
 
@@ -17,6 +17,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 app.use('/api/posts', postRoutes)
+app.use('/api/users', userRoutes)
 
 
 app.listen(PORT,()=>{
