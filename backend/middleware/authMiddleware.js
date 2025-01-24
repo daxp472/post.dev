@@ -31,10 +31,3 @@ export const checkTokenExpiration = async(req, res, next) => {
     }
 };
 
-
-export const testmiddleware = (req, res, next) => {
-    console.log("This is a testing middleware");
-    next();
-}
-
-
