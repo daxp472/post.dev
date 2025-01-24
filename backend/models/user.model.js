@@ -70,6 +70,35 @@ const userSchema = new mongoose.Schema({
         default: 'en'
     },
 
+    followers: {
+        type : Array,
+        default : []
+    },
+    followers_count: {
+        type : Number,
+        default : 0
+    },
+
+    following: {
+        type : Array,
+        default : []
+    },
+
+    following_count: {
+        type : Number,
+        default : 0
+    },
+
+    notifications : {
+        type : Array,
+        default : []
+    },
+
+    posts : {
+        type : Array,
+        default : []
+    }
+
     
 }, {
     timestamps: true

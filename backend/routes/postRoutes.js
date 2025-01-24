@@ -8,10 +8,15 @@ import {
     updateComment, 
     deleteComment, 
 } from '../controllers/postControllers/postCommentControllers.js';
+import { checkTokenExpiration } from "../middleware/authMiddleware.js";
 const postRoutes = express.Router();
 
 postRoutes.get("/", postRouteEntry);
 postRoutes.get("/allPosts", getAllPosts);
+
+
+postRoutes.use(checkTokenExpiration)
+
 postRoutes.post("/newPost", createNewPost);
 postRoutes.put("/updatePost/:postid", updatePost);
 postRoutes.delete("/deletePost/:postid", deletePost);

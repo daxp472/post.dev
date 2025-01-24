@@ -1,4 +1,5 @@
 import Post from "../../models/post.model.js";
+import User from "../../models/user.model.js";
 
 export const postRouteEntry = (req, res) => {
     res.status(200).json({
@@ -56,16 +57,15 @@ export const createNewPost = async (req, res) => {
             });
         }
 
-        // Validate ObjectId format for user_id
-        if (!user_id.match(/^[0-9a-fA-F]{24}$/)) {
-            return res.status(400).json({
-                success: false,
-                message: "Invalid user ID format",
-                timestamp: Date.now()
-            });
-        }
-
         const newPost = await Post.create({ user_id, title, content, tags });
+
+        // After creating the new post
+        await User.findByIdAndUpdate(
+            user_id,
+            { $push: { posts: newPost._id } },
+            { new: true, runValidators: true }
+        );
+
         
         res.status(201).json({
             success: true,
@@ -142,6 +142,7 @@ export const updatePost = async (req, res) => {
 export const deletePost = async (req, res) => {
     try {
         const { postid } = req.params;
+        const user_id = (req.headers.authorization)
 
         // Validate postid format
         if (!postid.match(/^[0-9a-fA-F]{24}$/)) {
@@ -161,6 +162,13 @@ export const deletePost = async (req, res) => {
                 timestamp: Date.now()
             });
         }
+
+        // After deleting the post
+        await User.findByIdAndUpdate(
+            deletedPost.user_id,
+            { $pull: { posts: deletedPost._id } },
+            { new: true, runValidators: true }
+        );
 
         res.status(200).json({
             success: true,

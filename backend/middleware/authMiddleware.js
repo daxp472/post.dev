@@ -15,10 +15,13 @@ export const checkTokenExpiration = async(req, res, next) => {
             res.status(401).json({
                 success: true,
                 is_logined : false,
-                message : "The token is not valid."
+                message : "The token is not valid.",
+                current_time : currentTime,
+                expiration_time : expiration_time
             })
         } else {
             // If the token is still valid, proceed to the next middleware or route handler
+        
             next();
         }
     } catch (error) {

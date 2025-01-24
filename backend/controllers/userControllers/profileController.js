@@ -3,21 +3,13 @@ import User from "../../models/user.model.js";
 // Get user profile by ID
 export const getProfileById = async (req, res) => {
     try {
-        const userId = req.params.uid || req.query.uid;
+        const userId = req.params.userId;
         const user = await User.findById(userId);
 
         if (!user) {
             return res.status(404).json({
                 success: false,
                 message: "User not found"
-            });
-        }
-
-        // Check visibility settings
-        if (user.visibility === 'private' && user._id !== req.user?._id) {
-            return res.status(403).json({
-                success: false,
-                message: "This profile is private"
             });
         }
 
@@ -47,8 +39,8 @@ export const getProfileById = async (req, res) => {
 export const getCurrentUserProfile = async (req, res) => {
     try {
         // Using the Firebase UID which is stored as _id in MongoDB
-        const userId = req.params.uid || req.query.uid;
-        const user = await User.findById(userId);
+        const firebaseUid = req.user._id;
+        const user = await User.findById(firebaseUid);
 
         if (!user) {
             return res.status(404).json({
@@ -88,8 +80,7 @@ export const getCurrentUserProfile = async (req, res) => {
 export const updateProfile = async (req, res) => {
     try {
         const { firstname, lastname, title, bio, visibility } = req.body;
-        const userId = req.params.uid || req.query.uid;
-        const user = await User.findById(userId);
+        const user = await User.findById(req.user._id);
 
         if (!user) {
             return res.status(404).json({

@@ -66,7 +66,7 @@ export const loginUser = async (req, res, next) => {
 
         const data = { 
             email : userFirebaseId.user.email, 
-            hashed_token : userFirebaseId._tokenResponse.idToken, 
+            hashed_token : userFirebaseId.user.uid, 
             expiration_time : userFirebaseId.user.stsTokenManager.expirationTime,
             expiration_duration : userFirebaseId._tokenResponse.expiresIn,
             is_logined : true
