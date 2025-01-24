@@ -3,6 +3,10 @@ import bcrypt from "bcryptjs";
 import crypto from "crypto";
 
 const userSchema = new mongoose.Schema({
+    _id: {
+        type: String,
+        required: true
+    },
     // Basic Information
     username: {
         type: String,
@@ -19,14 +23,14 @@ const userSchema = new mongoose.Schema({
         lowercase: true,
         match: [/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/, 'Please provide a valid email']
     },
-
+    
     // Profile Information
-    firstName: {
+    firstname: {
         type: String,
         required: [true, "First name is required"],
         trim: true
     },
-    lastName: {
+    lastname: {
         type: String,
         required: [true, "Last name is required"],
         trim: true
