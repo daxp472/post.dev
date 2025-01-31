@@ -1,3 +1,4 @@
+import mongoose from "mongoose";
 import Post from "../../models/post.model.js";
 import User from "../../models/user.model.js";
 
@@ -66,7 +67,19 @@ export const createNewPost = async (req, res) => {
             { new: true, runValidators: true }
         );
 
+        const user = await User.findById(user_id);
+        console.log(user.followers)
+        for (const followerId of user.followers) {
+            await User.findOneAndUpdate(
+                { username: followerId},
+                { $push: { notifications: {postid : newPost._id, heading: title, content: content.substring(0, 100), timestamp: Date.now() }} },
+                { new: true, runValidators: true }
+            );
+        }
+
+
         
+
         res.status(201).json({
             success: true,
             message: "Post created successfully",
