@@ -1,10 +1,10 @@
-import React from 'react'
-import NavbarComponent from './components/Navbar'
+import React from 'react';
+import LandingPage from './pages/LandingPage';
 
-const App = () => {
+function App() {
   return (
-    <NavbarComponent />
-  )
+    <LandingPage />
+  );
 }
 
-export default App
+export default App;
