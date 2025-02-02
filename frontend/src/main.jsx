@@ -5,6 +5,10 @@ import App from './App.jsx'
 import { createBrowserRouter, RouterProvider  } from 'react-router-dom'
 import GenericCardComponent from './components/GenericCardComponent.jsx'
 import LoginPage from './pages/LoginPage.jsx'
+import UserRegisterationPage from './pages/UserRegisterationPage.jsx'
+import LandingPage from './pages/LandingPage.jsx'
+import ExplorePage from './pages/ExplorePage.jsx'
+import CreatePostPage from './pages/CreatePostPage.jsx'
 
 
 const router = createBrowserRouter([
@@ -14,7 +18,15 @@ const router = createBrowserRouter([
   },
   {
     path: '/explore',
-    element: <GenericCardComponent />
+    element: <ExplorePage />
+  },
+  {
+    path : '/welcome',
+    element : <LandingPage />
+  },
+  {
+    path : '/create',
+    element : <CreatePostPage />
   },
   {
     path: '/auth',
@@ -23,10 +35,10 @@ const router = createBrowserRouter([
         path: '/auth/login',
         element: <LoginPage />
       },
-      // {
-      //   path: '/auth/register',
-      //   element: <RegistrationPage />
-      // }
+      {
+        path: '/auth/register',
+        element: <UserRegisterationPage />
+      }
     ]
   }
 ])

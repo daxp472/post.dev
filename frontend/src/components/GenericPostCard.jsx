@@ -1,6 +1,6 @@
 import { Bitcoin, MessageSquare, ThumbsUp, Link2, Bookmark } from "lucide-react"
 
-export default function GenericCardComponent({}) {
+export default function GenericCardComponent({title, desc, image, likes_count, comments_count }) {
   return (
     <div className="w-[320px] overflow-hidden bg-zinc-900 text-white border border-zinc-800 rounded-lg shadow-lg">
       <div className="p-4 pb-2">
@@ -9,13 +9,13 @@ export default function GenericCardComponent({}) {
             <Bitcoin className="h-6 w-6 text-white" />
           </div>
           <div className="space-y-1">
-            <h3 className="font-semibold leading-none">Tips for Frontend Dev?</h3>
+            <h3 className="font-semibold leading-none">{title}</h3>
             <p className="text-sm text-zinc-400">Sep 9 · Github</p>
           </div>
         </div>
       </div>
       <div className="p-4 pt-2">
-        <p className="text-sm text-zinc-300 mb-3">Working on the Frontend...</p>
+        <p className="text-sm text-zinc-300 mb-3">{desc}</p>
         <div className="relative h-40 w-full overflow-hidden rounded-lg">
           <img
             src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/Frame%20111-0BShR9izBGj4CaQkwBWE1aYdLrbNhl.png"
@@ -28,11 +28,11 @@ export default function GenericCardComponent({}) {
         <div className="flex items-center gap-4">
           <button className="flex items-center gap-1.5 text-zinc-400 hover:text-white transition-colors">
             <ThumbsUp className="h-4 w-4" />
-            <span className="text-xs font-medium">3,000</span>
+            <span className="text-xs font-medium">{likes_count}</span>
           </button>
           <button className="flex items-center gap-1.5 text-zinc-400 hover:text-white transition-colors">
             <MessageSquare className="h-4 w-4" />
-            <span className="text-xs font-medium">200</span>
+            <span className="text-xs font-medium">{comments_count}</span>
           </button>
         </div>
         <div className="flex items-center gap-2">

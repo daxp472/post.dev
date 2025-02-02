@@ -2,7 +2,7 @@ import { useState } from "react"
 import { FaArrowLeft, FaGithub } from "react-icons/fa"
 import { FcGoogle } from "react-icons/fc"
 import { MdEmail } from "react-icons/md"
-import { Navigate } from "react-router-dom";
+import { Navigate, NavLink } from "react-router-dom";
 // import { SiInfinity } from "react-icons/si"
 
 export default function LoginPage() {
@@ -88,10 +88,12 @@ export default function LoginPage() {
                   <FaGithub className="h-5 w-5" />
                   Signup with Github
                 </button>
+                <NavLink to={'/auth/register'}>
                 <button className="cursor-pointer flex w-full items-center justify-center gap-3 rounded-lg bg-[#24292F] py-2 text-sm font-medium text-white transition-colors hover:bg-[#24292F]/80">
                   <MdEmail className="h-5 w-5" />
                   Signup with Email
                 </button>
+                </NavLink>
               </div>
             </div>
           </div>
