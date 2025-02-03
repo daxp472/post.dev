@@ -5,15 +5,17 @@ import { FaArrowLeft, FaGithub } from "react-icons/fa"
 import { FcGoogle } from "react-icons/fc"
 import { MdEmail } from "react-icons/md"
 import { Navigate, NavLink } from "react-router-dom";
-// import { SiInfinity } from "react-icons/si"
+import axios from 'axios'
 
 export default function UserRegisterationPage() {
 
-  const [signupData, setsignupData] = useState({email:"", password:""});
+  const [signupData, setsignupData] = useState({ email: "", password: "" });
 
-  const handleLoginProcess = (e) => {
+  const handleLoginProcess = async(e) => {
     e.preventDefault();
     console.log(signupData);
+    const responseData = await axios.post("https://post-dev.onrender.com/api/users/register/newuser", signupData);
+    console.log(responseData);
   }
 
   return (
@@ -38,7 +40,7 @@ export default function UserRegisterationPage() {
               <div className="mb-8 flex justify-center">
                 <div className="flex items-center gap-2">
                   <div className="text-red-500">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-infinity h-8 w-8 text-[#ff4d4d]"><path d="M12 12c-2-2.67-4-4-6-4a4 4 0 1 0 0 8c2 0 4-1.33 6-4Zm0 0c2 2.67 4 4 6 4a4 4 0 0 0 0-8c-2 0-4 1.33-6 4Z"></path></svg>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-infinity h-8 w-8 text-[#ff4d4d]"><path d="M12 12c-2-2.67-4-4-6-4a4 4 0 1 0 0 8c2 0 4-1.33 6-4Zm0 0c2 2.67 4 4 6 4a4 4 0 0 0 0-8c-2 0-4 1.33-6 4Z"></path></svg>
                   </div>
                   <div className="text-3xl font-semibold text-white">
                     Daily<span className="text-zinc-400">.POST</span>
@@ -50,11 +52,40 @@ export default function UserRegisterationPage() {
               <div className="space-y-4">
                 <div>
                   <input
+                    type="text"
+                    placeholder="Username"
+                    className="w-full rounded-lg border border-zinc-700 bg-zinc-800/50 px-4 py-2 text-white placeholder-zinc-400 backdrop-blur-sm focus:border-zinc-500 focus:outline-none focus:ring-2 focus:ring-purple-500/20"
+                    value={signupData.username}
+                    onChange={(e) => setsignupData({ ...signupData, username: e.target.value })}
+                  />
+                </div>
+                <div className="flex gap-2">
+                  <div>
+                    <input
+                      type="text"
+                      placeholder="First Name"
+                      className="w-full rounded-lg border border-zinc-700 bg-zinc-800/50 px-4 py-2 text-white placeholder-zinc-400 backdrop-blur-sm focus:border-zinc-500 focus:outline-none focus:ring-2 focus:ring-purple-500/20"
+                      value={signupData.firstname}
+                      onChange={(e) => setsignupData({ ...signupData, firstname: e.target.value })}
+                    />
+                  </div>
+                  <div>
+                    <input
+                      type="text"
+                      placeholder="Last Name"
+                      className="w-full rounded-lg border border-zinc-700 bg-zinc-800/50 px-4 py-2 text-white placeholder-zinc-400 backdrop-blur-sm focus:border-zinc-500 focus:outline-none focus:ring-2 focus:ring-purple-500/20"
+                      value={signupData.lastname}
+                      onChange={(e) => setsignupData({ ...signupData, lastname: e.target.value })}
+                    />
+                  </div>
+                </div>
+                <div>
+                  <input
                     type="email"
                     placeholder="Email"
                     className="w-full rounded-lg border border-zinc-700 bg-zinc-800/50 px-4 py-2 text-white placeholder-zinc-400 backdrop-blur-sm focus:border-zinc-500 focus:outline-none focus:ring-2 focus:ring-purple-500/20"
                     value={signupData.email}
-                    onChange={(e)=>setsignupData({...signupData, email:e.target.value})}
+                    onChange={(e) => setsignupData({ ...signupData, email: e.target.value })}
                   />
                 </div>
                 <div>
@@ -63,11 +94,11 @@ export default function UserRegisterationPage() {
                     placeholder="Password"
                     className="w-full rounded-lg border border-zinc-700 bg-zinc-800/50 px-4 py-2 text-white placeholder-zinc-400 backdrop-blur-sm focus:border-zinc-500 focus:outline-none focus:ring-2 focus:ring-purple-500/20"
                     value={signupData.password}
-                    onChange={(e)=>setsignupData({...signupData, password:e.target.value})}
+                    onChange={(e) => setsignupData({ ...signupData, password: e.target.value })}
                   />
                 </div>
                 <button className="cursor-pointer w-full rounded-lg bg-gradient-to-r from-blue-500 via-indigo-500 to-purple-600 py-2 font-medium text-white transition-all hover:from-blue-600 hover:via-indigo-600 hover:to-purple-700 focus:outline-none focus:ring-2 focus:ring-purple-500/50"
-                onClick={handleLoginProcess}
+                  onClick={handleLoginProcess}
                 >
                   Signup
                 </button>
@@ -91,10 +122,10 @@ export default function UserRegisterationPage() {
                   Signup with Github
                 </button>
                 <NavLink to={"/auth/login"}>
-                <button className="cursor-pointer flex w-full items-center justify-center gap-3 rounded-lg bg-[#24292F] py-2 text-sm font-medium text-white transition-colors hover:bg-[#24292F]/80">
-                  <MdEmail className="h-5 w-5" />
-                  Login with Email
-                </button>
+                  <button className="cursor-pointer flex w-full items-center justify-center gap-3 rounded-lg bg-[#24292F] py-2 text-sm font-medium text-white transition-colors hover:bg-[#24292F]/80">
+                    <MdEmail className="h-5 w-5" />
+                    Login with Email
+                  </button>
                 </NavLink>
               </div>
             </div>

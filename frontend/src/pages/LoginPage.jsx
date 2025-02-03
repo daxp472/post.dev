@@ -1,3 +1,4 @@
+import axios from "axios";
 import { useState } from "react"
 import { FaArrowLeft, FaGithub } from "react-icons/fa"
 import { FcGoogle } from "react-icons/fc"
@@ -8,10 +9,14 @@ import { Navigate, NavLink } from "react-router-dom";
 export default function LoginPage() {
 
   const [loginData, setLoginData] = useState({email:"", password:""});
+  const [isLoading, setIsLogin] = useState(false);
 
-  const handleLoginProcess = (e) => {
+  const handleLoginProcess = async(e) => {
     e.preventDefault();
     console.log(loginData);
+    const loginRes = await axios.get("http://localhost:8080/api/users/login", loginData);
+    console.log(loginRes);
+    
   }
 
   return (
