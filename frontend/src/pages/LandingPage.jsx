@@ -11,7 +11,7 @@ function LandingPage() {
           <Infinity className="h-8 w-8 text-[#ff4d4d]" />
           <span className="text-xl font-bold">Daily.POST</span>
         </div>
-        <NavLink to={'/auth/login'}>
+        <NavLink to={'/auth/register'}>
         <button className="cursor-pointer bg-transparent border-2 border-white/20 hover:border-white/40 text-white px-6 py-2 rounded-full transition-all">
           Start Reading - Free
         </button>
@@ -34,7 +34,7 @@ function LandingPage() {
           Personalized news feed, dev communities and search, much better than what's out there. Maybe ;)
         </p>
 
-        <NavLink to={'/auth/login'}>
+        <NavLink to={'/auth/register'}>
         <button className="cursor-pointer bg-gradient-to-r from-[#9333ea] to-[#7c3aed] hover:from-[#8b5cf6] hover:to-[#6d28d9] text-white px-8 py-4 rounded-lg text-lg font-semibold transition-all transform hover:scale-105">
           Start Reading - Free
         </button>

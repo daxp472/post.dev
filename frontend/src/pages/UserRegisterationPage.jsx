@@ -4,18 +4,25 @@ import { useState } from "react"
 import { FaArrowLeft, FaGithub } from "react-icons/fa"
 import { FcGoogle } from "react-icons/fc"
 import { MdEmail } from "react-icons/md"
-import { Navigate, NavLink } from "react-router-dom";
+import { Navigate, NavLink, useNavigate } from "react-router-dom";
 import axios from 'axios'
+import Loader from "../components/Loader";
 
 export default function UserRegisterationPage() {
 
   const [signupData, setsignupData] = useState({ email: "", password: "" });
+  const [isLoading, setIsLoading] = useState(false);
+  const navigate = useNavigate();
 
   const handleLoginProcess = async(e) => {
     e.preventDefault();
     console.log(signupData);
+    setIsLoading((prev)=>!prev);
     const responseData = await axios.post("https://post-dev.onrender.com/api/users/register/newuser", signupData);
     console.log(responseData);
+    if(responseData.status === 201){
+      navigate("/")
+    }
   }
 
   return (
@@ -29,7 +36,10 @@ export default function UserRegisterationPage() {
       </div>
 
       <div className="flex min-h-screen items-center justify-center px-4 ">
-        <div className="w-full max-w-md overflow-hidden rounded-2xl bg-zinc-900/30 shadow-xl backdrop-blur-xl backdrop-filter">
+          {
+            (isLoading)?(<Loader />):
+            (
+              <div className="w-full max-w-md overflow-hidden rounded-2xl bg-zinc-900/30 shadow-xl backdrop-blur-xl backdrop-filter">
           <div className="relative">
             {/* Glossy overlay */}
             <div className="absolute inset-0 bg-gradient-to-b from-white/10 to-transparent opacity-50"></div>
@@ -131,6 +141,8 @@ export default function UserRegisterationPage() {
             </div>
           </div>
         </div>
+            )
+          }
       </div>
     </div>
   )

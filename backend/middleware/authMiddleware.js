@@ -21,7 +21,7 @@ export const checkTokenExpiration = async(req, res, next) => {
             })
         } else {
             // If the token is still valid, proceed to the next middleware or route handler
-        
+            req.user = (await User_auth.findOne({hashed_token : hashedToken})).hashed_token
             next();
         }
     } catch (error) {

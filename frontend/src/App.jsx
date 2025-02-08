@@ -5,19 +5,24 @@ import Navbar from './components/Navbar';
 import Sidebar from './components/SidebarComponent';
 import GenericCardComponent from './components/GenericPostCard';
 import axios from 'axios'
+import Loader from './components/Loader';
 
 function App() {
   const [Initialdata, setInitialdata] = useState([])
+  const [isLoading, setIsLoading] = useState(true);
   const fetchInitailData = async() => {
     const ResponseData = await axios.get("https://post-dev.onrender.com/api/posts/allPosts")
     setInitialdata(ResponseData.data.data);
+    console.log(ResponseData.data.data)
+    console.log("initialdata")
     console.log(Initialdata)
   }
 
   useEffect(()=>{
     console.log("fetching...")
     fetchInitailData()
-    console.log(Initialdata)
+      setIsLoading((prev)=>!prev);
+    
   }, [])
 
   return (
@@ -26,21 +31,31 @@ function App() {
       <div className="w-full">
         <Navbar />
         <div className="w-full flex flex-col items-center overflow-y-scroll max-h-full">
-          <div className="w-fit pb-[95px]  grid grid-cols-4 p-5 gap-10 max-2xl:grid-cols-3 max-xl:grid-cols-2">
-            {
-              Initialdata.map((post, index)=>{
-                return (
-                  <GenericCardComponent
-                    title={post.title}
-                    desc={post.desc}
-                    image={"dfsdfsdfd"}
-                    likes_count={post.likes_count}
-                    comments_count={post.comments.length}
-                  />
-                )
-              })
-            }
-          </div>
+          {
+            (isLoading)?
+            (
+              <div className="h-full w-full flex items-center justify-center p-20">
+                <Loader/>
+              </div>
+            )
+            :
+            (<div className="w-fit pb-[95px]  grid grid-cols-4 p-5 gap-10 max-2xl:grid-cols-3 max-xl:grid-cols-2">
+              {
+                Initialdata.map((post, index)=>{
+                  return (
+                    <GenericCardComponent
+                      title={post.title}
+                      desc={post.desc}
+                      image={"dfsdfsdfd"}
+                      likes_count={post.likes_count}
+                      comments_count={post.comments.length}
+                      key={index}
+                    />
+                  )
+                })
+              }
+            </div>)
+          }
         </div>
       </div>
     </div>

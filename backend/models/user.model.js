@@ -47,6 +47,13 @@ const userSchema = new mongoose.Schema({
         maxlength: [500, "Bio cannot be more than 500 characters"]
     },
 
+    // Add this to your user schema
+    likedPosts: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Post',
+        default: []
+    }],
+
     accountType: {
         type: String,
         enum: ['personal', 'business', 'admin'],

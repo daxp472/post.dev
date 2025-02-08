@@ -9,7 +9,7 @@ export default function GenericCardComponent({title, desc, image, likes_count, c
             <Bitcoin className="h-6 w-6 text-white" />
           </div>
           <div className="space-y-1">
-            <h3 className="font-semibold leading-none">{title}</h3>
+            <h3 className="font-semibold leading-none line-clamp-2 min-h-[31.99px]">{title}</h3>
             <p className="text-sm text-zinc-400">Sep 9 · Github</p>
           </div>
         </div>
