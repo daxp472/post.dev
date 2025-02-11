@@ -9,7 +9,7 @@ const navItems = [
     { icon: FiEdit3, text: "Create a post", path: "/create" },
     { icon: FiLink, text: "Share a link", path: "/share" },
     { icon: FiBell, text: "Activity", path: "/activity" },
-    { icon: FiSettings, text: "Settings", path: "/settings" },
+    { icon: FiSettings, text: "Settings", path: "/more/settings" },
 ]
 
 export default function Sidebar() {

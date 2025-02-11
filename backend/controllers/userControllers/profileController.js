@@ -3,7 +3,8 @@ import User from "../../models/user.model.js";
 // Get user profile by ID
 export const getProfileById = async (req, res) => {
     try {
-        const userId = req.params.userId;
+        const userId = req.params.uid;
+        console.log(`\n\n\n${userId}`)
         const user = await User.findById(userId);
 
         if (!user) {

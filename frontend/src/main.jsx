@@ -9,6 +9,9 @@ import UserRegisterationPage from './pages/UserRegisterationPage.jsx'
 import LandingPage from './pages/LandingPage.jsx'
 import ExplorePage from './pages/ExplorePage.jsx'
 import CreatePostPage from './pages/CreatePostPage.jsx'
+import SettingComponents from './components/SettingComponent.jsx'
+import SettingsPage from './pages/SettingsPage.jsx'
+import ProfileSectionComponent from './components/ProfileSectionComponent.jsx'
 
 
 const router = createBrowserRouter([
@@ -27,6 +30,14 @@ const router = createBrowserRouter([
   {
     path : '/create',
     element : <CreatePostPage />
+  },
+  {
+    path : '/testing',
+    element : <ProfileSectionComponent />
+  },
+  {
+    path : '/more/settings',
+    element : <SettingsPage />
   },
   {
     path: '/auth',
