@@ -18,6 +18,7 @@ export const getProfileById = async (req, res) => {
         return res.status(200).json({
             success: true,
             data: {
+                email : user.email,
                 username: user.username,
                 firstname: user.firstname,
                 lastname: user.lastname,

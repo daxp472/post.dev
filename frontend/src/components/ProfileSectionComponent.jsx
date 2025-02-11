@@ -1,9 +1,9 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Users, MapPin, Calendar, Link as LinkIcon, Twitter, Github as GitHub, Mail } from 'lucide-react';
 import axios from 'axios';
 
 function ProfileSectionComponent() {
-  const userData = {
+  const [userData, setUserData] = useState({
     username: "mohit",
     fullName: "mohit soni",
     email: "mohit@gmail.com",
@@ -11,7 +11,7 @@ function ProfileSectionComponent() {
     accountType: "personal",
     followersCount: 0,
     followingCount: 0
-  };
+  });
 
   const getDetails = async() => {
     const userData = await axios.get(
@@ -24,12 +24,14 @@ function ProfileSectionComponent() {
     )
 
     console.log(userData);
+    setUserData({...userData.data.data, ...userData, fullName: userData.data.data.firstname + " " + userData.data.data.lastname});
+    
 
   };
 
   useEffect(()=>{
     getDetails();
-  })
+  }, [])
 
   return (
     <div className="min-h-screen bg-[#18181E] text-gray-100 max-w-[750px]">
@@ -64,7 +66,7 @@ function ProfileSectionComponent() {
             </div>
             
             <p className="mt-4 text-gray-300">
-              Full-stack developer passionate about creating beautiful and functional web applications
+              {userData.bio}
             </p>
             
             {/* Stats */}
