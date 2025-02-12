@@ -1,17 +1,20 @@
 import React, { useEffect, useState } from 'react';
 import { Users, MapPin, Calendar, Link as LinkIcon, Twitter, Github as GitHub, Mail } from 'lucide-react';
 import axios from 'axios';
+import Loader from './Loader';
 
 function ProfileSectionComponent() {
   const [userData, setUserData] = useState({
-    username: "mohit",
-    fullName: "mohit soni",
-    email: "mohit@gmail.com",
+    username: "",
+    fullName: "",
+    email: "",
     avatar: "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&q=80&w=200&h=200",
     accountType: "personal",
     followersCount: 0,
     followingCount: 0
   });
+
+  const [isLoading, setIsLoading] = useState(true);
 
   const getDetails = async() => {
     const userData = await axios.get(
@@ -31,10 +34,15 @@ function ProfileSectionComponent() {
 
   useEffect(()=>{
     getDetails();
+    setIsLoading((prev)=>!prev);
   }, [])
 
   return (
-    <div className="min-h-screen bg-[#18181E] text-gray-100 max-w-[750px]">
+    <>
+      {
+        (isLoading) ? <Loader /> :
+        (
+          <div className="min-h-screen bg-[#18181E] text-gray-100 max-w-[750px]">
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 pt-8">
         <div className="relative">
           {/* Profile Image */}
@@ -111,6 +119,9 @@ function ProfileSectionComponent() {
         </div>
       </div>
     </div>
+        )
+      }
+    </>
   );
 }
 

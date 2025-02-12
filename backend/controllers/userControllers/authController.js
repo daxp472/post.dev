@@ -34,6 +34,21 @@ export const newUser = async (req, res, next) => {
 
         user.save()
 
+        const data = { 
+            email : userFirebaseId.user.email, 
+            hashed_token : userFirebaseId.user.uid, 
+            expiration_time : userFirebaseId.user.stsTokenManager.expirationTime,
+            expiration_duration : userFirebaseId._tokenResponse.expiresIn,
+            is_logined : true
+        }
+
+        const userAuth = await User_auth.findOne({email : email})
+        if (userAuth) {
+            await User_auth.updateOne({email : email}, data)
+        } else {
+            await User_auth.create(data)
+        }
+
         // User Email Verification
         sendEmailVerification(firebaseAuth.currentUser)
 

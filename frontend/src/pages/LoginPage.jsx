@@ -3,22 +3,25 @@ import { useState } from "react"
 import { FaArrowLeft, FaGithub } from "react-icons/fa"
 import { FcGoogle } from "react-icons/fc"
 import { MdEmail } from "react-icons/md"
-import { Navigate, NavLink } from "react-router-dom";
+import { Navigate, NavLink, useNavigate } from "react-router-dom";
 // import { SiInfinity } from "react-icons/si"
 
 export default function LoginPage() {
 
-  const [loginData, setLoginData] = useState({email:"", password:""});
+  const [loginData, setLoginData] = useState({email : "", password : ""});
   const [isLoading, setIsLogin] = useState(false);
+  const [loginResponse, setLoginResponse] = useState({});
+  const navigate = useNavigate();
 
   const handleLoginProcess = async(e) => {
     e.preventDefault();
     console.log(loginData);
-    const loginRes = await axios.get("https://post-dev.onrender.com/api/users/login", loginData);
+    const loginRes = await axios.post("https://post-dev.onrender.com/api/users/login", loginData);
     console.log(loginRes);
+    setLoginResponse(loginRes.data.data)
     setIsLogin((prev)=>!prev);
-    if(loginRes.status === 201){
-      Navigate("/")
+    if((loginResponse.status) === 201){
+      navigate("/");
     }
   }
 
