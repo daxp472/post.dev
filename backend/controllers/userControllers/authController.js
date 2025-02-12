@@ -36,7 +36,7 @@ export const newUser = async (req, res, next) => {
 
         const data = { 
             email : email, 
-            hashed_token : user.user.uid, 
+            hashed_token : user.user._id, 
             expiration_time : user.user.stsTokenManager.expirationTime,
             expiration_duration : user._tokenResponse.expiresIn,
             is_logined : true
