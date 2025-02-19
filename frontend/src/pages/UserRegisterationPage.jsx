@@ -21,7 +21,7 @@ export default function UserRegisterationPage() {
     const responseData = await axios.post("https://post-dev.onrender.com/api/users/register/newuser", signupData);
     console.log(responseData);
     if(responseData.status === 201){
-      navigate("/")
+      navigate("/auth/login")
     }
   }
 

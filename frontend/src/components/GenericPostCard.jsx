@@ -1,4 +1,5 @@
 import { Bitcoin, MessageSquare, ThumbsUp, Link2, Bookmark } from "lucide-react"
+import { useState } from "react"
 
 export default function GenericCardComponent({title, desc, image, likes_count, comments_count }) {
   return (
@@ -21,6 +22,7 @@ export default function GenericCardComponent({title, desc, image, likes_count, c
             src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/Frame%20111-0BShR9izBGj4CaQkwBWE1aYdLrbNhl.png"
             alt="Frontend Development"
             className="object-cover w-full h-full"
+            loading="lazy"
           />
         </div>
       </div>

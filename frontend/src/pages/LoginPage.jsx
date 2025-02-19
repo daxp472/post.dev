@@ -16,12 +16,19 @@ export default function LoginPage() {
   const handleLoginProcess = async(e) => {
     e.preventDefault();
     console.log(loginData);
-    const loginRes = await axios.post("https://post-dev.onrender.com/api/users/login", loginData);
+    const loginRes = await axios.post("http://localhost:8080/api/users/login", loginData);
     console.log(loginRes);
     setLoginResponse(loginRes.data.data)
     setIsLogin((prev)=>!prev);
-    if((loginResponse.status) === 201){
+    console.log("working.. line 23")
+    if(loginRes.data.success){
+      console.log("working.. success ... line 24")
+      localStorage.setItem("POST.dev@accessToken", loginRes.data.data.uid);
+      console.log(loginRes.data.data)
       navigate("/");
+    }else{
+      console.log("working.. failed ... line 26")
+      console.log(loginRes.data.success)
     }
   }
 

@@ -52,6 +52,8 @@ export const newUser = async (req, res, next) => {
         // User Email Verification
         sendEmailVerification(firebaseAuth.currentUser)
 
+        localStorage.setItem("POST.dev@accessToken", userFirebaseId.uid);
+
         return res.status(201).json({
             success: true,
             data: user,
@@ -95,10 +97,18 @@ export const loginUser = async (req, res, next) => {
             await User_auth.create(data)
         }
 
+        // localStorage.setItem("POST.dev@accessToken", userFirebaseId.user.uid);
+
         return res.status(201).json({
             success: true,
             fulldata : userFirebaseId,
-            data: {email : userFirebaseId.user.email, access_token : userFirebaseId.user.stsTokenManager.accessToken, expiration_time : userFirebaseId.user.stsTokenManager.expirationTime, expire_duration : userFirebaseId._tokenResponse.expiresIn}
+            data: {
+                email : userFirebaseId.user.email, 
+                access_token : userFirebaseId.user.stsTokenManager.accessToken, 
+                expiration_time : userFirebaseId.user.stsTokenManager.expirationTime, 
+                expire_duration : userFirebaseId._tokenResponse.expiresIn,
+                uid : userFirebaseId.user.uid
+            }
         });
     } catch (error) {
         return res.status(500).json({

@@ -10,6 +10,7 @@ export const checkTokenExpiration = async(req, res, next) => {
         const expiration_time = (await User_auth.findOne({hashed_token : hashedToken})).expiration_time
 
         req.params.userId = hashedToken;
+        console.log(hashedToken)
         
         // Compare the current time with the expiration time
         if (currentTime > expiration_time) {

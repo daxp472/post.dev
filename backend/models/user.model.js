@@ -35,7 +35,13 @@ const userSchema = new mongoose.Schema({
     },
     avatar: {
         type: String,
-        default: "default-avatar.png"
+        default: "https://api.dicebear.com/7.x/avataaars/svg", // Default avatar URL
+        get: function(url) {
+            // If URL is already complete, return as is
+            if (url.startsWith('http')) return url;
+            // Otherwise, prepend the backend URL
+            return `${process.env.BACKEND_URL}/${url}`;
+        }
     },
     title: {
         type: String,
