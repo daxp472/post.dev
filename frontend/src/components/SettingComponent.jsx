@@ -76,7 +76,7 @@ function SettingComponents() {
         <h2 className="text-2xl font-bold mb-6">{selectedItem}</h2>
         <div className="space-y-6">
           {/* Content will go here based on selected item */}
-          <div className="bg-[#18181E] rounded-lg p-4 flex items-center flex-col">
+          <div className="bg-[#18181E] rounded-lg p-4 flex items-center flex-col ">
             {/* Sample content for {selectedItem} */}
 
             {
