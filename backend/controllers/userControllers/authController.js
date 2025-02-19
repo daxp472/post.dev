@@ -52,7 +52,6 @@ export const newUser = async (req, res, next) => {
         // User Email Verification
         sendEmailVerification(firebaseAuth.currentUser)
 
-        localStorage.setItem("POST.dev@accessToken", userFirebaseId.uid);
 
         return res.status(201).json({
             success: true,

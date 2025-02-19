@@ -57,7 +57,7 @@ const ProfileSectionComponent = () => {
     try {
       setIsLoading(true);
       const response = await axios.get(
-        `http://localhost:8080/api/users/${uid}/profile`,
+        `https://post-dev.onrender.com/api/users/${uid}/profile`,
         {
           headers: { Authorization: uid },
         }
@@ -132,7 +132,7 @@ const ProfileSectionComponent = () => {
 
     try {
       await axios.put(
-        `http://localhost:8080/api/users/${uid}/profile/update`,
+        `https://post-dev.onrender.com/api/users/${uid}/profile/update`,
         {
           firstname: editFormData.firstname,
           lastname: editFormData.lastname,
