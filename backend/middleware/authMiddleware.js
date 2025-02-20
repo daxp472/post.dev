@@ -8,6 +8,9 @@ export const checkTokenExpiration = async(req, res, next) => {
         const hashedToken = ( req.headers.authorization)
         const currentTime = Date.now();
         const expiration_time = (await User_auth.findOne({hashed_token : hashedToken})).expiration_time
+
+        req.params.userId = hashedToken;
+        console.log(hashedToken)
         
         // Compare the current time with the expiration time
         if (currentTime > expiration_time) {
@@ -21,7 +24,7 @@ export const checkTokenExpiration = async(req, res, next) => {
             })
         } else {
             // If the token is still valid, proceed to the next middleware or route handler
-        
+            req.user = (await User_auth.findOne({hashed_token : hashedToken})).hashed_token
             next();
         }
     } catch (error) {

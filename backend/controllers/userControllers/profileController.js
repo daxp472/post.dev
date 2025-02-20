@@ -3,7 +3,8 @@ import User from "../../models/user.model.js";
 // Get user profile by ID
 export const getProfileById = async (req, res) => {
     try {
-        const userId = req.params.userId;
+        const userId = req.params.uid;
+        console.log(`The uid is : ${userId}`)
         const user = await User.findById(userId);
 
         if (!user) {
@@ -17,6 +18,7 @@ export const getProfileById = async (req, res) => {
         return res.status(200).json({
             success: true,
             data: {
+                email: user.email,
                 username: user.username,
                 firstname: user.firstname,
                 lastname: user.lastname,
@@ -24,7 +26,9 @@ export const getProfileById = async (req, res) => {
                 bio: user.bio,
                 avatar: user.avatar,
                 accountType: user.accountType,
-                visibility: user.visibility
+                visibility: user.visibility,
+                followers_count: user.followers_count,
+                following_count: user.following_count
             }
         });
     } catch (error) {
@@ -80,7 +84,7 @@ export const getCurrentUserProfile = async (req, res) => {
 export const updateProfile = async (req, res) => {
     try {
         const { firstname, lastname, title, bio, visibility } = req.body;
-        const user = await User.findById(req.user._id);
+        const user = await User.findById(req.params.uid);
 
         if (!user) {
             return res.status(404).json({
