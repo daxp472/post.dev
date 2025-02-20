@@ -4,9 +4,12 @@ import { FaArrowLeft, FaGithub } from "react-icons/fa"
 import { FcGoogle } from "react-icons/fc"
 import { MdEmail } from "react-icons/md"
 import { Navigate, NavLink, useNavigate } from "react-router-dom";
+import useAuthStore from "../store/useAuthStore";
 // import { SiInfinity } from "react-icons/si"
 
 export default function LoginPage() {
+
+  const LoginThroughCredentials = useAuthStore((state) => state.login);
 
   const [loginData, setLoginData] = useState({email : "", password : ""});
   const [isLoading, setIsLogin] = useState(false);
@@ -15,21 +18,7 @@ export default function LoginPage() {
 
   const handleLoginProcess = async(e) => {
     e.preventDefault();
-    console.log(loginData);
-    const loginRes = await axios.post("http://localhost:8080/api/users/login", loginData);
-    console.log(loginRes);
-    setLoginResponse(loginRes.data.data)
-    setIsLogin((prev)=>!prev);
-    console.log("working.. line 23")
-    if(loginRes.data.success){
-      console.log("working.. success ... line 24")
-      localStorage.setItem("POST.dev@accessToken", loginRes.data.data.uid);
-      console.log(loginRes.data.data)
-      navigate("/");
-    }else{
-      console.log("working.. failed ... line 26")
-      console.log(loginRes.data.success)
-    }
+    LoginThroughCredentials(loginData);
   }
 
   return (

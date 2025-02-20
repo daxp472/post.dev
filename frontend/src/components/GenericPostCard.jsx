@@ -34,14 +34,13 @@ export default function GenericCardComponent({title, desc, image, likes_count, c
       </div>
       <div className="p-4 pt-2">
         <p className="text-sm text-zinc-300 mb-3 line-clamp-3">{desc}</p>
-        <div className="relative h-48 w-full overflow-hidden rounded-lg group">
+        <div className="relative h-48 w-full overflow-hidden rounded-lg ">
           <img
-            src={image || "https://hebbkx1anhila5yf.public.blob.vercel-storage.com/Frame%20111-0BShR9izBGj4CaQkwBWE1aYdLrbNhl.png"}
+            src={image}
             alt="Frontend Development"
-            className="object-cover w-full h-full transition-transform duration-300 group-hover:scale-105"
+            className="object-cover w-full h-full"
             loading="lazy"
           />
-          <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-10 transition-all duration-300"></div>
         </div>
       </div>
       <div className="flex items-center justify-between border-t border-zinc-800 p-4">

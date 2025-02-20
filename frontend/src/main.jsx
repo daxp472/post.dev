@@ -12,8 +12,9 @@ import CreatePostPage from './pages/CreatePostPage.jsx'
 import SettingComponents from './components/SettingComponent.jsx'
 import SettingsPage from './pages/SettingsPage.jsx'
 import ProfileSectionComponent from './components/ProfileSectionComponent.jsx'
+import PageNotFound from './AdditionalNecessaryElements/PageNotFound.jsx'
 
-
+ 
 const router = createBrowserRouter([
   {
     path: '/',
@@ -38,6 +39,10 @@ const router = createBrowserRouter([
   {
     path : '/more/settings',
     element : <SettingsPage />
+  },
+  {
+    path : '*',
+    element : <PageNotFound />
   },
   {
     path: '/auth',

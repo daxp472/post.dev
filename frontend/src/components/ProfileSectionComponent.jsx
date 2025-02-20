@@ -5,6 +5,7 @@ import {
   Users, MapPin, Link as LinkIcon, Twitter, Github, Mail,
   Edit, AlertTriangle, RefreshCw
 } from 'lucide-react';
+import ProfileError from '../AdditionalNecessaryElements/ProfileError';
 
 // Utility function for generating avatar
 const generateAvatar = (username) =>
@@ -47,12 +48,17 @@ const ProfileSectionComponent = () => {
   const [isError, setIsError] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [isLoggedIn, setisLoggedIn] = useState(false);
 
   // Fetch User Profile
   const fetchUserProfile = useCallback(async () => {
     const uid = localStorage.getItem('POST.dev@accessToken');
 
+    if(uid){
+      setisLoggedIn((prev)=>!prev);
+    }
 
+    console.log(uid);
 
     try {
       setIsLoading(true);
@@ -173,7 +179,15 @@ const ProfileSectionComponent = () => {
 
   return (
     <div className="min-h-screen bg-[#18181E] text-gray-100 flex justify-center py-12  w-full">
-      <div className="container  w-full px-4">
+
+      {!isLoggedIn && (
+        <ProfileError 
+          title="Profile Access Denied" 
+          message="Please log in to view your profile details" 
+        />
+      )}
+
+      <div className={`container  w-full px-4 ${(!isLoggedIn)?'hidden':'block'}`}>
         <div className="bg-[#1f1f28] w-full border-gray-700 rounded-3xl shadow-2xl overflow-hidden transform transition-all duration-300 hover:scale-[1.02]">
           <div className="relative">
             {/* Background Gradient Overlay */}
