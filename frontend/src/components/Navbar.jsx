@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Link } from 'react-router-dom'
 import {
@@ -11,11 +11,17 @@ import {
   FaCog,
   FaSignOutAlt
 } from "react-icons/fa"
+import { useUserStore } from '../store/useAuthStore'
 
 export default function Navbar() {
+  
   // State management for hover interactions
   const [isProfileHovered, setIsProfileHovered] = useState(false);
   const [isCardHovered, setIsCardHovered] = useState(false);
+
+  const user = useUserStore((state) => state.user)
+
+
 
   // Handler for profile icon hover
   const handleProfileHover = () => {
@@ -36,6 +42,8 @@ export default function Navbar() {
   const handleCardHoverEnter = () => {
     setIsCardHovered(true);
     setIsProfileHovered(true);
+    console.log(user)
+    
   }
 
   // Handler for card hover leave

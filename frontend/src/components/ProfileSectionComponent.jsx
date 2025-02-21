@@ -6,13 +6,15 @@ import {
   Edit, AlertTriangle, RefreshCw
 } from 'lucide-react';
 import ProfileError from '../AdditionalNecessaryElements/ProfileError';
+import { FetchUserProfile } from '../utils/AuthFunctions';
+import { UserProfileStorageGetter } from '../utils/localStorageEncrypter';
 
 // Utility function for generating avatar
 const generateAvatar = (username) =>
   `https://api.dicebear.com/7.x/avataaars/svg?seed=${username || 'anonymous'}`;
 
 // Initial state structure
-const INITIAL_USER_STATE = {
+let INITIAL_USER_STATE = {
   username: '',
   fullName: '',
   email: '',
@@ -40,6 +42,8 @@ const INITIAL_EDIT_STATE = {
   }
 };
 
+
+
 const ProfileSectionComponent = () => {
   // State Management
   const [userData, setUserData] = useState(INITIAL_USER_STATE);
@@ -54,48 +58,29 @@ const ProfileSectionComponent = () => {
   const fetchUserProfile = useCallback(async () => {
     const uid = localStorage.getItem('POST.dev@accessToken');
 
-    if(uid){
-      setisLoggedIn((prev)=>!prev);
+    if (!uid) {
+      setisLoggedIn(false);
+      return;
     }
 
-    console.log(uid);
-
     try {
-      setIsLoading(true);
-      const response = await axios.get(
-        `https://post-dev.onrender.com/api/users/${uid}/profile`,
-        {
-          headers: { Authorization: uid },
-        }
-      );
-
-      const profileData = response.data.data;
-
-
-      setUserData({
-        username: profileData.username || '',
-        fullName: `${profileData.firstname || ''} ${profileData.lastname || ''}`.trim(),
-        email: profileData.email || '',
-        avatar: profileData.avatar || generateAvatar(profileData.username),
-        bio: profileData.bio || '',
-        title: profileData.title || '',
-        followersCount: profileData.followers_count || 0,
-        followingCount: profileData.following_count || 0,
-        socialLinks: {
-          twitter: profileData.socialLinks?.twitter || '',
-          github: profileData.socialLinks?.github || '',
-          portfolio: profileData.socialLinks?.portfolio || ''
-        }
-      });
-
-      setIsLoading(false);
-      setIsError(false);
+      const serverResponse = await UserProfileStorageGetter("postDevUserConfigs");
+      const parsedData = JSON.parse(serverResponse.data);
+      
+      if (parsedData.status === 201) {
+        setUserData(parsedData);
+        setIsLoading(false);
+        setisLoggedIn(true);
+      } else {
+        setIsError(true);
+        setErrorMessage('Failed to fetch profile');
+        setIsLoading(false);
+      }
     } catch (error) {
       console.error('Profile fetch error:', error);
-      setIsLoading(false);
       setIsError(true);
-      setErrorMessage(error.response?.data?.message || 'Failed to load profile');
-      toast.error('Could not fetch profile details');
+      setErrorMessage('Failed to fetch profile');
+      setIsLoading(false);
     }
   }, []);
 
@@ -163,6 +148,9 @@ const ProfileSectionComponent = () => {
       console.error('Profile update error:', error);
       toast.error('Failed to update profile');
     }
+
+    await FetchUserProfile()
+    
   };
 
   // Initial Data Fetch
@@ -187,7 +175,7 @@ const ProfileSectionComponent = () => {
         />
       )}
 
-      <div className={`container  w-full px-4 ${(!isLoggedIn)?'hidden':'block'}`}>
+      <div className={`container  w-full px-4 ${(!isLoggedIn) ? 'hidden' : 'block'}`}>
         <div className="bg-[#1f1f28] w-full border-gray-700 rounded-3xl shadow-2xl overflow-hidden transform transition-all duration-300 hover:scale-[1.02]">
           <div className="relative">
             {/* Background Gradient Overlay */}
@@ -409,3 +397,4 @@ const ProfileSectionComponent = () => {
 };
 
 export default ProfileSectionComponent;
+

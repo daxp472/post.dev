@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import LandingPage from './pages/LandingPage';
 import { Router } from 'lucide-react';
 import Navbar from './components/Navbar';
@@ -10,19 +10,22 @@ import Loader from './components/Loader';
 function App() {
   const [Initialdata, setInitialdata] = useState([])
   const [isLoading, setIsLoading] = useState(true);
-  const fetchInitailData = async() => {
-    const ResponseData = await axios.get("https://post-dev.onrender.com/api/posts/allPosts")
-    setInitialdata(ResponseData.data.data);
-    console.log(ResponseData.data.data)
-    console.log("initialdata")
-    console.log(Initialdata)
-  }
+  const fetchInitailData = useCallback(
+    async() => {
+      const ResponseData = await axios.get("https://post-dev.onrender.com/api/posts/allPosts")
+      setInitialdata(ResponseData.data.data);
+      console.log(ResponseData.data.data)
+      console.log("initialdata")
+      console.log(Initialdata)
+      setIsLoading((prev)=>!prev);
+    },
+    [Initialdata],
+  )
+  
 
   useEffect(()=>{
     console.log("fetching...")
     fetchInitailData()
-      setIsLoading((prev)=>!prev);
-    
   }, [])
 
   return (

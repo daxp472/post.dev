@@ -1,4 +1,4 @@
-import { StrictMode } from 'react'
+import { StrictMode, useEffect } from 'react'
 import { createRoot } from 'react-dom/client'
 import './index.css'
 import App from './App.jsx'
@@ -13,6 +13,16 @@ import SettingComponents from './components/SettingComponent.jsx'
 import SettingsPage from './pages/SettingsPage.jsx'
 import ProfileSectionComponent from './components/ProfileSectionComponent.jsx'
 import PageNotFound from './AdditionalNecessaryElements/PageNotFound.jsx'
+import { useUserStore } from './store/useAuthStore.js'
+
+
+const DefaulRun = () => {
+  const { setUser } = useUserStore();
+  useEffect(()=>{
+    console.log("Default Run");
+    setUser()
+  }, [])
+}
 
  
 const router = createBrowserRouter([
@@ -63,7 +73,10 @@ const router = createBrowserRouter([
 
 createRoot(document.getElementById('root')).render(
   //<StrictMode>
-    <RouterProvider router={router} />
+  <>
+  <DefaulRun />
+  <RouterProvider router={router} />
+  </>
   //</StrictMode>
 )
 
