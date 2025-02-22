@@ -1,7 +1,7 @@
 import axios from "axios";
 import { RemoveData, UserProfileStorageGetter, UserProfileStorageSetter } from "./localStorageEncrypter";
 import { useUserStore } from "../store/useAuthStore";
-import { GET_PROFILE_BY_ID_URL, LOGIN_USER_URL } from "../ApiRoutes";
+import { GET_ALL_USER_DETAILS, GET_PROFILE_BY_ID_URL, LOGIN_USER_URL } from "../ApiRoutes";
 
 
 
@@ -28,7 +28,7 @@ export const FetchUserProfile = async () => {
     const uid = localStorage.getItem('POST.dev@accessToken');
     try {
         const response = await axios.get(
-            GET_PROFILE_BY_ID_URL(uid),
+            GET_ALL_USER_DETAILS,
             {
                 headers: { Authorization: uid },
             }
@@ -67,4 +67,25 @@ export const FetchUserProfile = async () => {
 export const LogoutUser = () => {
     localStorage.removeItem('POST.dev@accessToken');
     RemoveData('postDevUserConfigs');
+}
+
+
+export const Fetch_my_profile = async () => {
+    const { setUser } = useUserStore.getState();
+    const uid = localStorage.getItem('POST.dev@accessToken');
+    try {
+        const response = await axios.get(
+            GET_ALL_USER_DETAILS,
+            {
+                headers: { Authorization: uid },
+            }
+        );
+        const profileData = response.data.data;
+        return profileData
+    }
+    catch (error) {
+        console.error('Profile fetch error:', error);
+        return { ...error, status: 500 };
+    }
+
 }

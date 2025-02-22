@@ -5,6 +5,7 @@ import ProfileCard from '../components/ProfileCard';
 import UserPostContainer from '../components/UserPostContainer';
 import { UserProfileStorageGetter } from '../utils/localStorageEncrypter';
 import ProfileError from '../AdditionalNecessaryElements/ProfileError';
+import { Fetch_my_profile } from '../utils/AuthFunctions';
 
 const ProfilePage = () => {
 
@@ -19,7 +20,12 @@ const ProfilePage = () => {
             if(parsedData){
                 setUserLogined(true);
             }
+            console.log("updating ....")
+            console.log(await Fetch_my_profile())
+            console.log("updating.. ends..")
         })()
+
+        
 
     }, [])
 

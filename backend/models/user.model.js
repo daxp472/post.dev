@@ -56,8 +56,7 @@ const userSchema = new mongoose.Schema({
     // Add this to your user schema
     likedPosts: [{
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'Post',
-        default: []
+        ref: 'Post'
     }],
 
     accountType: {
@@ -81,19 +80,19 @@ const userSchema = new mongoose.Schema({
         default: 'en'
     },
 
-    followers: {
-        type : Array,
-        default : []
-    },
+    followers: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User'
+    }],
     followers_count: {
         type : Number,
         default : 0
     },
 
-    following: {
-        type : Array,
-        default : []
-    },
+    following: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User'
+    }],
 
     following_count: {
         type : Number,
