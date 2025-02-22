@@ -1,11 +1,18 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { FaTwitter, FaGithub, FaGlobe } from 'react-icons/fa';
 import { MdEmail } from 'react-icons/md';
 import GenericCardComponent from './GenericPostCard';
+import { Link } from 'react-router-dom';
+import { ArrowLeft } from 'lucide-react';
+import { IoAddCircleOutline } from 'react-icons/io5';
+import NoPostYet from './NoPostYet';
 
 
 
 const UserPostContainer = () => {
+
+    const [posts, setPosts] = useState([]);
+
     return (
         <div className="  flex items-center justify-center w-full">
             <div className="relative w-full ">
@@ -14,29 +21,41 @@ const UserPostContainer = () => {
 
                 {/* Main card */}
                 <div className="relative bg-grady-800/50 backdrop-blur-smdd rodunded-3xl overflow-hidden bordder border-gray-d700 w-full">
-                    
+
 
                     {/* Profile content */}
-                    <div className=" grid grid-cols-3 max-[1720px]:grid-cols-2 max-[1360px]:grid-cols-1 gap-5 w-full ">
-                        <GenericCardComponent />
-                        <GenericCardComponent />
-                        <GenericCardComponent />
-                        <GenericCardComponent />
-                        <GenericCardComponent />
-                        <GenericCardComponent />
-                        <GenericCardComponent />
-                        <GenericCardComponent />
-                        <GenericCardComponent />
-                        <GenericCardComponent />
-                        <GenericCardComponent />
-                        <GenericCardComponent />
-                        <GenericCardComponent />
+                    <div className=" grid grid-cols-3 max-[1720px]:grid-cols-2 max-[1360px]:grid-cols-1 gap-5 w-full  ">
 
-                        
+                        {
+
+                            (posts.length == 0) ?
+                                <NoPostYet />
+                                :
+                                <>
+
+                                    <GenericCardComponent />
+                                    <GenericCardComponent />
+                                    <GenericCardComponent />
+                                    <GenericCardComponent />
+                                    <GenericCardComponent />
+                                    <GenericCardComponent />
+                                    <GenericCardComponent />
+                                    <GenericCardComponent />
+                                    <GenericCardComponent />
+                                    <GenericCardComponent />
+                                    <GenericCardComponent />
+                                    <GenericCardComponent />
+                                    <GenericCardComponent />
+
+                                </>
+
+                        }
+
+
                     </div>
                 </div>
 
-                
+
             </div>
         </div>
     )

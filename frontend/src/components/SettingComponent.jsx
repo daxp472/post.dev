@@ -43,7 +43,7 @@ function SettingComponents() {
       </div>
 
       {/* Mobile Header */}
-      <div className="md:hidden fixed top-0 left-0 right-0 bg-[#111112] border-b border-gray-800 p-4">
+      <div className="md:hidden fixed top-0 left-0 right-0 z-50 bg-[#111112] border-b border-gray-800 p-4">
         <div className="flex items-center gap-4">
           <button className="p-2"
             onClick={()=>window.history.back()}
@@ -60,7 +60,7 @@ function SettingComponents() {
         <h2 className="text-2xl font-bold mb-6">{selectedItem}</h2>
         <div className="space-y-6">
           {/* Content will go here based on selected item */}
-          <div className="bg-[#18181E] rounded-lg p-4 max-md:p-0 flex items-center flex-col ">
+          <div className="bg-[#18181E] rounded-lg p-4 max-md:p-0 pt-[73px] flex items-center flex-col ">
             {/* Sample content for {selectedItem} */}
             {
                 (selectedItem == 'Profile') ? <ProfileSectionComponent /> : `Sample content for ${selectedItem}`
