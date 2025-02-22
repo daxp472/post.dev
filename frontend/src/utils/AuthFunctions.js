@@ -1,12 +1,13 @@
 import axios from "axios";
 import { UserProfileStorageGetter, UserProfileStorageSetter } from "./localStorageEncrypter";
 import { useUserStore } from "../store/useAuthStore";
+import { GET_PROFILE_BY_ID_URL, LOGIN_USER_URL } from "../ApiRoutes";
 
 
 
 export const LoginUser = async (loginData) => {
     try {
-        const loginRes = await axios.post("http://localhost:8080/api/users/login", loginData);
+        const loginRes = await axios.post(LOGIN_USER_URL, loginData);
         console.log(loginRes);
         if (loginRes.data.success) {
             localStorage.setItem("POST.dev@accessToken", loginRes.data.data.uid);
@@ -27,7 +28,7 @@ export const FetchUserProfile = async () => {
     const uid = localStorage.getItem('POST.dev@accessToken');
     try {
         const response = await axios.get(
-            `https://post-dev.onrender.com/api/users/${uid}/profile`,
+            GET_PROFILE_BY_ID_URL(uid),
             {
                 headers: { Authorization: uid },
             }

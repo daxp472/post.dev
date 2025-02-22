@@ -7,6 +7,7 @@ import { Navigate, NavLink, useNavigate } from "react-router-dom";
 import { FetchUserProfile } from "../utils/AuthFunctions";
 import Loader from "../components/Loader";
 import { useUserStore } from "../store/useAuthStore";
+import { LOGIN_USER_URL } from "../ApiRoutes";
 // import { SiInfinity } from "react-icons/si"
 
 export default function LoginPage() {
@@ -20,7 +21,7 @@ export default function LoginPage() {
   const handleLoginProcess = async(e) => {
     e.preventDefault();
     setIsLogin((prev)=>!prev);
-    const loginRes = await axios.post("http://localhost:8080/api/users/login", loginData);
+    const loginRes = await axios.post(LOGIN_USER_URL, loginData);
     setLoginResponse(loginRes.data.data)
     if(loginRes.data.success){
       localStorage.setItem("POST.dev@accessToken", loginRes.data.data.uid);

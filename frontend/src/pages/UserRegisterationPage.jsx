@@ -7,6 +7,7 @@ import { MdEmail } from "react-icons/md"
 import { Navigate, NavLink, useNavigate } from "react-router-dom";
 import axios from 'axios'
 import Loader from "../components/Loader";
+import { REGISTER_NEW_USER_URL } from "../ApiRoutes";
 
 export default function UserRegisterationPage() {
 
@@ -18,7 +19,7 @@ export default function UserRegisterationPage() {
     e.preventDefault();
     console.log(signupData);
     setIsLoading((prev)=>!prev);
-    const responseData = await axios.post("https://post-dev.onrender.com/api/users/register/newuser", signupData);
+    const responseData = await axios.post(REGISTER_NEW_USER_URL, signupData);
     console.log(responseData);
     if(responseData.status === 201){
       navigate("/auth/login")

@@ -6,13 +6,14 @@ import Sidebar from './components/SidebarComponent';
 import GenericCardComponent from './components/GenericPostCard';
 import axios from 'axios'
 import Loader from './components/Loader';
+import { GET_ALL_POST_URL } from './ApiRoutes';
 
 function App() {
   const [Initialdata, setInitialdata] = useState([])
   const [isLoading, setIsLoading] = useState(true);
   const fetchInitailData = useCallback(
     async() => {
-      const ResponseData = await axios.get("https://post-dev.onrender.com/api/posts/allPosts")
+      const ResponseData = await axios.get(GET_ALL_POST_URL)
       setInitialdata(ResponseData.data.data);
       console.log(ResponseData.data.data)
       console.log("initialdata")
