@@ -43,7 +43,7 @@ export const getProfileById = async (req, res) => {
 export const getCurrentUserProfile = async (req, res) => {
     try {
         // Using the Firebase UID which is stored as _id in MongoDB
-        const firebaseUid = req.user._id;
+        const firebaseUid = ( req.headers.authorization);
         const user = await User.findById(firebaseUid);
 
         if (!user) {
@@ -69,8 +69,9 @@ export const getCurrentUserProfile = async (req, res) => {
                 status: user.status,
                 language: user.language,
                 createdAt: user.createdAt,
-                updatedAt: user.updatedAt
-            }
+                updatedAt: user.updatedAt,
+                ...user._doc
+            },
         });
     } catch (error) {
         return res.status(500).json({
