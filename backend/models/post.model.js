@@ -25,6 +25,10 @@ const postSchema = new mongoose.Schema({
         type: String,
         default : "POST.dev"
     },
+    image : {
+        type : String,
+        default : ""
+    },
     title: {
         type: String,
         required: true

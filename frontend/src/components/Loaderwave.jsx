@@ -1,8 +1,8 @@
 import { motion } from "framer-motion";
 
-const LoaderwaveComponent = () => {
+const LoaderwaveComponent = ({additionalStyling}) => {
   return (
-    <div className="grid place-content-center bg-violet-600 px-4 py-24">
+    <div className={"grid place-content-center  px-4 py-24"+additionalStyling}>
       <BarLoader />
     </div>
   );

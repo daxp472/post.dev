@@ -50,7 +50,7 @@ function App() {
                     <GenericCardComponent
                       title={post.title}
                       desc={post.desc}
-                      image={"dfsdfsdfd"}
+                      image={post.image}
                       likes_count={post.likes_count}
                       comments_count={post.comments.length}
                       key={index}

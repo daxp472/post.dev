@@ -42,7 +42,7 @@ export const getAllPosts = async (req, res) => {
 
 export const createNewPost = async (req, res) => {
     try {
-        const { user_id, title, content, tags } = req.body;
+        const { user_id, title, content, tags, image } = req.body;
 
         // Validate required fields
         if (!user_id || !title || !content) {
@@ -58,7 +58,7 @@ export const createNewPost = async (req, res) => {
             });
         }
 
-        const newPost = await Post.create({ user_id, title, content, tags });
+        const newPost = await Post.create({ user_id, title, content, tags, image });
 
         // After creating the new post
         await User.findByIdAndUpdate(

@@ -2,12 +2,21 @@ import { useState } from "react"
 import { BsImage } from "react-icons/bs"
 import { FaBitcoin } from "react-icons/fa"
 import { MdOutlinePreview, MdEdit } from "react-icons/md"
+import { UploadPicture } from "../utils/CloudinaryHandlers"
+import LoaderwaveComponent from "./Loaderwave"
+import axios from "axios"
+import { UPLOAD_POST_URL } from "../ApiRoutes"
+
+
 
 export default function ContentEditor() {
   const [mode, setMode] = useState("write")
   const [content, setContent] = useState("")
   const [heading, setHeading] = useState("")
-  const [thumbnail, setThumbnail] = useState(null)
+  const [tags, setTags] = useState("")
+  const [thumbnail, setThumbnail] = useState(null);
+  const [thumbnailImage, setThumbnailImage] = useState(null);
+  const [isUploading, setIsUploading] = useState(false);
 
   const handleContentChange = (e) => {
     setContent(e.target.value)
@@ -21,13 +30,56 @@ export default function ContentEditor() {
     const file = e.target.files[0]
     if (file) {
       setThumbnail(URL.createObjectURL(file))
+      setThumbnailImage(file);
+    }
+  }
+
+  const handlePublish = async () => {
+    try {
+      const uid = localStorage.getItem('POST.dev@accessToken');
+
+      setIsUploading(true)
+      const url = await UploadPicture(thumbnailImage);
+      axios.post(UPLOAD_POST_URL, 
+        {
+          user_id : uid,
+          title: heading,
+          content: content,
+          tags: tags.split("#").map((tag) => tag.trim()),
+          image: url,
+        },
+
+        { headers: { Authorization: uid } }
+      )
+
+      if (url) {
+        setIsUploading(false)
+      }
+      console.log(url)
+    } catch (error) {
+      setIsUploading(false)
     }
   }
 
   const wordCount = content.trim().split(/\s+/).filter(Boolean).length
 
+
+  const UpladingModel = () => {
+
+    return (
+      <div className={`absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2  p-4 w-full h-full z-[99999] flex justify-center items-center backdrop-blur-xl text-2xl text-white flex-col gap-2 ${(isUploading) ? "" : "hidden"}`}>
+
+        <LoaderwaveComponent additionalStyling={"bg-red-600 w-[450px]"} />
+        <p>Uploading...</p>
+
+      </div>
+    )
+  }
+
   return (
-    <div className="mx-auto max-w-full max-md:w-full p-6 space-y-6 max-md:pb-[64px] ">
+
+    <div className="mx-auto max-w-full max-md:w-full p-6 space-y-6 max-md:pb-[64px]">
+      <UpladingModel />
       {/* Thumbnail Upload */}
       <div className="relative max-md:w-full mb-6 rounded-xl bg-gradient-to-br from-zinc-800 to-zinc-900 p-8 shadow-lg transition-all hover:shadow-xl">
         <label className="flex cursor-pointer flex-col items-center justify-center">
@@ -56,7 +108,7 @@ export default function ContentEditor() {
           className="w-full bg-transparent text-xl font-semibold text-zinc-100 placeholder-zinc-500 focus:outline-none"
         />
         <div className="mt-2 h-1 w-full rounded-full bg-zinc-800">
-          <div 
+          <div
             className="h-full rounded-full bg-blue-500 transition-all"
             style={{ width: `${Math.min((heading.length / 255) * 100, 100)}%` }}
           />
@@ -68,22 +120,20 @@ export default function ContentEditor() {
       <div className="mb-6 flex gap-3 w-full">
         <button
           onClick={() => setMode("write")}
-          className={`flex items-center gap-2 rounded-lg px-5 py-2.5 text-sm font-medium transition-all ${
-            mode === "write" 
-              ? "bg-blue-600 text-white shadow-lg shadow-blue-500/20" 
+          className={`flex items-center gap-2 rounded-lg px-5 py-2.5 text-sm font-medium transition-all ${mode === "write"
+              ? "bg-blue-600 text-white shadow-lg shadow-blue-500/20"
               : "bg-zinc-800 text-zinc-400 hover:bg-zinc-700 hover:text-white"
-          }`}
+            }`}
         >
           <MdEdit className="h-5 w-5" />
           Write
         </button>
         <button
           onClick={() => setMode("preview")}
-          className={`flex items-center gap-2 rounded-lg px-5 py-2.5 text-sm font-medium transition-all ${
-            mode === "preview" 
-              ? "bg-blue-600 text-white shadow-lg shadow-blue-500/20" 
+          className={`flex items-center gap-2 rounded-lg px-5 py-2.5 text-sm font-medium transition-all ${mode === "preview"
+              ? "bg-blue-600 text-white shadow-lg shadow-blue-500/20"
               : "bg-zinc-800 text-zinc-400 hover:bg-zinc-700 hover:text-white"
-          }`}
+            }`}
         >
           <MdOutlinePreview className="h-5 w-5" />
           Preview
@@ -91,14 +141,28 @@ export default function ContentEditor() {
       </div>
 
       {/* Content Area */}
-      <div className="rounded-xl w-xl max-md:w-full bg-gradient-to-br from-zinc-900 to-zinc-800 p-6 shadow-lg">
+      <div className="rounded-xl text-white w-xl max-md:w-full bg-gradient-to-br from-zinc-900 to-zinc-800 p-6 shadow-lg gap-4 flex flex-col">
         {mode === "write" ? (
-          <textarea
-            value={content}
-            onChange={handleContentChange}
-            placeholder="Start writing your amazing content here..."
-            className="min-h-[300px] w-full resize-none bg-transparent text-lg leading-relaxed text-zinc-100 placeholder-zinc-500 focus:outline-none"
-          />
+          <>
+            <div className="flex flex-col gap-4">
+              <label className="text-sm font-medium text-zinc-400">Content</label>
+              <textarea
+                value={content}
+                onChange={handleContentChange}
+                placeholder="Start writing your amazing content here..."
+                className="min-h-[300px] w-full resize-none bg-transparent text-lg leading-relaxed text-zinc-100 placeholder-zinc-500 focus:outline-none border border-zinc-700 rounded-lg p-4 shadow-md transition-transform transform hover:scale-105 focus:scale-105"
+              />
+            </div>
+            <div className="flex flex-col gap-4 mt-6">
+              <label className="text-sm font-medium text-zinc-400">Tags</label>
+              <textarea
+                value={tags}
+                onChange={(e) => setTags(e.target.value)}
+                placeholder="Add Tags Here Use # to start"
+                className="min-h-[100px] w-full resize-none bg-transparent text-lg leading-relaxed text-zinc-100 placeholder-zinc-500 focus:outline-none border border-zinc-700 rounded-lg p-4 shadow-md transition-transform transform hover:scale-105 focus:scale-105"
+              />
+            </div>
+          </>
         ) : (
           <div className="rounded-lg bg-zinc-800/50 p-8">
             <div className="mb-6 flex items-center gap-4">
@@ -114,9 +178,9 @@ export default function ContentEditor() {
                   {heading || "How Bitcoin is Shaping the Future of Finance"}
                 </h2>
                 <p className="mt-1 text-sm text-zinc-400">
-                  {new Date().toLocaleDateString('en-US', { 
-                    month: 'short', 
-                    day: 'numeric' 
+                  {new Date().toLocaleDateString('en-US', {
+                    month: 'short',
+                    day: 'numeric'
                   })} · 5 min read
                 </p>
               </div>
@@ -134,8 +198,9 @@ export default function ContentEditor() {
         <div>
           <span className="font-medium text-zinc-300">{wordCount}</span> words
         </div>
-        <button 
+        <button
           className="rounded-lg bg-blue-600 px-6 py-2.5 font-medium text-white shadow-lg shadow-blue-500/20 transition-all hover:bg-blue-700"
+          onClick={handlePublish}
         >
           Publish
         </button>
