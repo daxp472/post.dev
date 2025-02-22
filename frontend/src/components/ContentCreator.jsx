@@ -55,6 +55,10 @@ export default function ContentEditor() {
       if (url) {
         setIsUploading(false)
       }
+      setHeading("")
+      setContent("")
+      setTags("");
+      setThumbnail(null);
       console.log(url)
     } catch (error) {
       setIsUploading(false)
