@@ -16,7 +16,7 @@ export default function GenericCardComponent({title, desc, image, likes_count, c
   };
 
   return (
-    <div className="w-[350px] overflow-hidden bg-zinc-900 text-white border border-zinc-800 rounded-xl shadow-2xl transition-all duration-300 hover:shadow-lg hover:border-zinc-700 group">
+    <div className="min-w-[350px] w-full overflow-hidden bg-zinc-900 text-white border border-zinc-800 rounded-xl shadow-2xl transition-all duration-300 hover:shadow-lg hover:border-zinc-700 group">
       <div className="p-4 pb-2">
         <div className="flex items-center gap-3">
           <div className="rounded-full bg-gradient-to-br from-orange-500 to-orange-600 p-2.5 shadow-md group-hover:scale-105 transition-transform">

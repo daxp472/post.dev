@@ -21,3 +21,11 @@ export const UserProfileStorage = new EncryptStorage("POSTDEVENCRYPTION", {
         message : "Succesfull"
     }
   }
+
+  export const RemoveData = async(getterkey) => {
+    UserProfileStorage.removeItem(getterkey);
+    return {
+        status : 201,
+        message : "Succesfull"
+    }
+  }

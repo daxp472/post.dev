@@ -14,6 +14,7 @@ import SettingsPage from './pages/SettingsPage.jsx'
 import ProfileSectionComponent from './components/ProfileSectionComponent.jsx'
 import PageNotFound from './AdditionalNecessaryElements/PageNotFound.jsx'
 import { useUserStore } from './store/useAuthStore.js'
+import ProfilePage from './pages/ProfilePage.jsx'
 
 
 const DefaulRun = () => {
@@ -49,6 +50,10 @@ const router = createBrowserRouter([
   {
     path : '/more/settings',
     element : <SettingsPage />
+  },
+  {
+    path : '/profile',
+    element : <ProfilePage />
   },
   {
     path : '*',

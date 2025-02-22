@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import {
   IoSearch,
   IoNotificationsOutline
@@ -12,6 +12,7 @@ import {
   FaSignOutAlt
 } from "react-icons/fa"
 import { UserProfileStorageGetter } from '../utils/localStorageEncrypter'
+import { LogoutUser } from '../utils/AuthFunctions'
 
 export default function Navbar() {
 
@@ -20,6 +21,8 @@ export default function Navbar() {
   const [isCardHovered, setIsCardHovered] = useState(false);
   const [isUserLogined, setIsUserLogined] = useState(false);
   const [UserMiniCardData, setUserMiniCardData] = useState({username:"", name:"", profile:""});
+
+  const navigate = useNavigate()
 
 
 
@@ -56,14 +59,18 @@ export default function Navbar() {
   useEffect(() => {
     // console.log(user)
     (async()=>{
-      const serverResponse = await UserProfileStorageGetter("postDevUserConfigs");
-      const parsedData = JSON.parse(serverResponse.data)
-      console.log(parsedData)
-      setUserMiniCardData({
-        username: parsedData.username,
-        name: parsedData.fullName,
-        profile: parsedData.avatar,
-      });
+      try {
+        const serverResponse = await UserProfileStorageGetter("postDevUserConfigs");
+        const parsedData = JSON.parse(serverResponse.data)
+        console.log(parsedData)
+        setUserMiniCardData({
+          username: parsedData.username,
+          name: parsedData.fullName,
+          profile: parsedData.avatar,
+        });
+      } catch (error) {
+        setIsUserLogined(true)
+      }
     })()
   }, [])
 
@@ -120,7 +127,9 @@ export default function Navbar() {
 
             {/* Profile section with hover card */}
             {
-              isUserLogined ? <button className='p-3 px-5 text-white font-black rounded-md bg-gray-800 cursor-pointer'>Signup</button> :
+              isUserLogined ? 
+                <Link to={'/auth/register'} ><button className='p-3 px-5 text-white font-black rounded-md bg-gray-800 cursor-pointer'>Signup</button></Link>
+              :
                 (
                   <>
                     <div
@@ -157,12 +166,12 @@ export default function Navbar() {
                                         <div className="flex items-center space-x-4">
                                           {/* Gradient avatar */}
                                           <div className="w-16 h-16 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full flex items-center justify-center overflow-hidden">
-                                            <img src={UserMiniCardData.profile} alt="" />
+                                            <img src={(UserMiniCardData.profile == "") ? UserMiniCardData.profile : "https://cdn-icons-png.flaticon.com/512/149/149071.png"} alt="" />
                                           </div>
                                           {/* User details */}
                                           <div>
                                             <h3 className="text-white font-bold text-lg">{UserMiniCardData.name}</h3>
-                                            <p className="text-zinc-400 text-sm">{UserMiniCardData.username}</p>
+                                            <p className="text-zinc-400 text-sm">@{UserMiniCardData.username}</p>
                                           </div>
                                         </div>
                                       </div>
@@ -188,11 +197,16 @@ export default function Navbar() {
                                         {/* Logout button */}
                                         <button
                                           className="w-full text-left px-4 py-2.5 text-red-400 hover:bg-zinc-700 rounded-lg transition-colors flex items-center cursor-pointer"
-                                          // onClick={}
+                                          onClick={()=>{LogoutUser()
+                                            console.log(window.location.hostname)
+                                            navigate('/auth/login')
+                                          }}
                                         >
                                           <FaSignOutAlt className="mr-3" /> Logout
                                         </button>
                                       </div>
+
+                                    
 
                                     </>
                                   )

@@ -1,5 +1,5 @@
 import axios from "axios";
-import { UserProfileStorageGetter, UserProfileStorageSetter } from "./localStorageEncrypter";
+import { RemoveData, UserProfileStorageGetter, UserProfileStorageSetter } from "./localStorageEncrypter";
 import { useUserStore } from "../store/useAuthStore";
 import { GET_PROFILE_BY_ID_URL, LOGIN_USER_URL } from "../ApiRoutes";
 
@@ -61,4 +61,10 @@ export const FetchUserProfile = async () => {
         console.error('Profile fetch error:', error);
         return { ...error, status: 500 };
     }
+}
+
+
+export const LogoutUser = () => {
+    localStorage.removeItem('POST.dev@accessToken');
+    RemoveData('postDevUserConfigs');
 }

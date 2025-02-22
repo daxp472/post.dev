@@ -1,7 +1,8 @@
-import { NavLink } from "react-router-dom"
-import { AiOutlineHome } from "react-icons/ai"
+import { Link, NavLink } from "react-router-dom"
+import { AiFillProfile, AiOutlineHome } from "react-icons/ai"
 import { BiSearch } from "react-icons/bi"
 import { FiEdit3, FiLink, FiBell, FiSettings, FiLogOut } from "react-icons/fi"
+import { CgProfile } from "react-icons/cg";
 
 const navItems = [
     { icon: AiOutlineHome, text: "Home", path: "/" },
@@ -45,10 +46,16 @@ export default function Sidebar() {
 
 
 
+                <div className="">
+                <Link to={"/profile"} className="flex items-center gap-3 max-lg:p-2 rounded-lg px-3 py-2 text-sm font-medium text-zinc-400 transition-colors hover:bg-zinc-800 hover:text-white">
+                    <CgProfile className="h-5 w-5 " />
+                    <span className="max-lg:hidden">Profile</span>
+                </Link>
                 <button className="flex items-center gap-3 max-lg:p-2 rounded-lg px-3 py-2 text-sm font-medium text-zinc-400 transition-colors hover:bg-zinc-800 hover:text-white">
                     <FiLogOut className="h-5 w-5 " />
                     <span className="max-lg:hidden">Log out</span>
                 </button>
+                </div>
             </div>
         </aside>
     )

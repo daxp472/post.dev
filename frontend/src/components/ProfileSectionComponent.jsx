@@ -204,7 +204,7 @@ const ProfileSectionComponent = () => {
                 <div className="relative mb-4">
                   <div className="w-40 h-40 md:w-48 md:h-48 rounded-full overflow-hidden border-4 border-gray-700 shadow-lg transform transition-transform duration-300 hover:scale-105">
                     <img
-                      src={userData.avatar || 'https://static.vecteezy.com/system/resources/thumbnails/004/899/680/small/beautiful-blonde-woman-with-makeup-avatar-for-a-beauty-salon-illustration-in-the-cartoon-style-vector.jpg'}
+                      src={(!userData.avatar)? userData.avatar : "https://cdn-icons-png.flaticon.com/512/149/149071.png"}
                       alt={`Profile of ${userData?.fullName || 'User'}`}
                       className="w-full h-full object-cover"
                       onError={(e) => { e.target.src = '/default-avatar.png' }}
