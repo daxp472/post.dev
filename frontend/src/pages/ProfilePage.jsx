@@ -22,6 +22,7 @@ const ProfilePage = () => {
             }
             console.log("updating ....")
             console.log(await Fetch_my_profile())
+            console.log(await parsedData)
             console.log("updating.. ends..")
         })()
 

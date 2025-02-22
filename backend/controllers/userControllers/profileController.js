@@ -43,10 +43,15 @@ export const getProfileById = async (req, res) => {
 export const getCurrentUserProfile = async (req, res) => {
     try {
         // Using the Firebase UID which is stored as _id in MongoDB
-        const firebaseUid = ( req.headers.authorization);
-        const user = await User.findById(firebaseUid).populate('likedPosts')
-        .populate('followers')
-        .populate('following');
+        const firebaseUid = req.headers.authorization;
+        const user = await User.findById(firebaseUid)
+            .populate('likedPosts')
+            .populate('followers')
+            .populate('following')
+            .populate({
+                path: 'posts', // Assuming posts is an array of Post objects
+                model: 'Post'  // Ensure to replace 'Post' with the actual model name if different
+            });
 
         if (!user) {
             return res.status(404).json({
@@ -72,6 +77,7 @@ export const getCurrentUserProfile = async (req, res) => {
                 language: user.language,
                 createdAt: user.createdAt,
                 updatedAt: user.updatedAt,
+                posts: user.posts, // Include posts in the response
                 ...user._doc
             },
         });

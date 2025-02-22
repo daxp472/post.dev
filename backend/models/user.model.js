@@ -35,11 +35,9 @@ const userSchema = new mongoose.Schema({
     },
     avatar: {
         type: String,
-        default: "https://api.dicebear.com/7.x/avataaars/svg", // Default avatar URL
+        default: "https://api.dicebear.com/7.x/avataaars/svg",
         get: function(url) {
-            // If URL is already complete, return as is
             if (url.startsWith('http')) return url;
-            // Otherwise, prepend the backend URL
             return `${process.env.BACKEND_URL}/${url}`;
         }
     },
@@ -53,10 +51,10 @@ const userSchema = new mongoose.Schema({
         maxlength: [500, "Bio cannot be more than 500 characters"]
     },
 
-    // Add this to your user schema
     likedPosts: [{
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'Post'
+        ref: 'Post',
+        default: []
     }],
 
     accountType: {
@@ -82,40 +80,34 @@ const userSchema = new mongoose.Schema({
 
     followers: [{
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'User'
+        ref: 'User',
+        default: []
     }],
-    followers_count: {
-        type : Number,
-        default : 0
-    },
 
     following: [{
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'User'
+        ref: 'User',
+        default: []
     }],
 
-    following_count: {
-        type : Number,
-        default : 0
+    notifications: {
+        type: Array,
+        default: []
     },
 
-    notifications : {
-        type : Array,
-        default : []
-    },
-
-    posts : {
-        type : Array,
-        default : []
+    posts: {
+        type: Array,
+        default: []
     }
 
-    
 }, {
     timestamps: true
 });
 
 // Indexes
 userSchema.index({ email: 1, username: 1 });
+userSchema.index({ followers: 1 });
+userSchema.index({ following: 1 });
 
 const User = mongoose.model('User', userSchema);
 export default User;

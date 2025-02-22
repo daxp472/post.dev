@@ -49,7 +49,8 @@ export const FetchUserProfile = async () => {
                 twitter: profileData.socialLinks?.twitter || '',
                 github: profileData.socialLinks?.github || '',
                 portfolio: profileData.socialLinks?.portfolio || ''
-            }
+            },
+            ...profileData
         };
 
         // Return the new profile object with a status
