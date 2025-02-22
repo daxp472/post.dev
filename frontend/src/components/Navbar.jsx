@@ -102,7 +102,7 @@ export default function Navbar() {
           </div>
 
           {/* Search section with input and search icon */}
-          <div className="flex-1 px-20">
+          <div className="flex-1 px-20 max-sm:hidden">
             <div className="relative">
               <IoSearch className="absolute left-3 top-1/2 h-5 w-5 -translate-y-1/2 text-zinc-400" />
               <input
@@ -116,12 +116,12 @@ export default function Navbar() {
           {/* Right section with action buttons */}
           <div className="flex items-center gap-4">
             {/* New Post button */}
-            <button className="rounded-full bg-white px-4 py-1.5 text-sm font-medium text-black transition-colors hover:bg-zinc-200">
+            <button className="max-md:hidden rounded-full bg-white px-4 py-1.5 text-sm font-medium text-black transition-colors hover:bg-zinc-200">
               New Post
             </button>
 
             {/* Notifications button */}
-            <button className="rounded-full p-2 text-zinc-400 transition-colors hover:bg-zinc-800 hover:text-white">
+            <button className="max-md:hidden rounded-full p-2 text-zinc-400 transition-colors hover:bg-zinc-800 hover:text-white">
               <IoNotificationsOutline className="h-6 w-6" />
             </button>
 
@@ -188,7 +188,7 @@ export default function Navbar() {
 
                                         {/* Settings link */}
                                         <Link
-                                          to="/settings"
+                                          to="/more/settings"
                                           className=" px-4 py-2.5 text-white hover:bg-zinc-700 rounded-lg transition-colors flex items-center"
                                         >
                                           <FaCog className="mr-3" /> Settings

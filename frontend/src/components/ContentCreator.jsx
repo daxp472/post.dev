@@ -27,9 +27,9 @@ export default function ContentEditor() {
   const wordCount = content.trim().split(/\s+/).filter(Boolean).length
 
   return (
-    <div className="mx-auto max-w-4xl p-6 space-y-6">
+    <div className="mx-auto max-w-full max-md:w-full p-6 space-y-6 max-md:pb-[64px] ">
       {/* Thumbnail Upload */}
-      <div className="relative mb-6 rounded-xl bg-gradient-to-br from-zinc-800 to-zinc-900 p-8 shadow-lg transition-all hover:shadow-xl">
+      <div className="relative max-md:w-full mb-6 rounded-xl bg-gradient-to-br from-zinc-800 to-zinc-900 p-8 shadow-lg transition-all hover:shadow-xl">
         <label className="flex cursor-pointer flex-col items-center justify-center">
           <input type="file" className="hidden" accept="image/*" onChange={handleThumbnailChange} />
           {thumbnail ? (
@@ -65,7 +65,7 @@ export default function ContentEditor() {
       </div>
 
       {/* Write/Preview Toggle */}
-      <div className="mb-6 flex gap-3">
+      <div className="mb-6 flex gap-3 w-full">
         <button
           onClick={() => setMode("write")}
           className={`flex items-center gap-2 rounded-lg px-5 py-2.5 text-sm font-medium transition-all ${
@@ -91,7 +91,7 @@ export default function ContentEditor() {
       </div>
 
       {/* Content Area */}
-      <div className="rounded-xl bg-gradient-to-br from-zinc-900 to-zinc-800 p-6 shadow-lg">
+      <div className="rounded-xl w-xl max-md:w-full bg-gradient-to-br from-zinc-900 to-zinc-800 p-6 shadow-lg">
         {mode === "write" ? (
           <textarea
             value={content}

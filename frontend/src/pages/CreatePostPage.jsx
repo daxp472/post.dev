@@ -9,7 +9,7 @@ const CreatePostPage = () => {
       <Sidebar />
       <div className="w-full">
         <Navbar />
-        <div className="w-full flex flex-col items-center overflow-y-scroll max-h-full">
+        <div className="w-full flex flex-col items-center overflow-y-scroll h-[calc(100vh-64px)] scrollbar-hidden">
           
           <ContentEditor />
           

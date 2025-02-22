@@ -17,7 +17,7 @@ const UserPostContainer = () => {
                     
 
                     {/* Profile content */}
-                    <div className=" grid grid-cols-3 max-2xl:grid-cols-2 max-xl:grid-cols-1 gap-5 w-full ">
+                    <div className=" grid grid-cols-3 max-[1720px]:grid-cols-2 max-[1360px]:grid-cols-1 gap-5 w-full ">
                         <GenericCardComponent />
                         <GenericCardComponent />
                         <GenericCardComponent />

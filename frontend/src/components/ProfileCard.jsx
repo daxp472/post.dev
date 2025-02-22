@@ -27,15 +27,17 @@ const ProfileCard = () => {
 
 
     return (
-        <div className=" flex items-center justify-center w-fit max-md:w-full sticky top-0">
+        <div className=" flex items-center justify-center w-fit max-[880px]:w-full min-[880px]:sticky top-0">
           <div className="relative w-full ">
             {/* Glossy effect overlay */}
             <div className="absolute inset-0 bg-gradient-to-r from-transparent  to-transparent rounded-3xl transform rotate-12 blur-sm"></div>
             
             {/* Main card */}
-            <div className="relative bg-gray-800/50 backdrop-blur-sm rounded-3xl overflow-hidden border border-gray-700 w-fit max-md:w-full min-w-[350px]">
+            <div className="relative bg-gray-800/50 backdrop-blur-sm rounded-3xl overflow-hidden border border-gray-700 w-fit max-[880px]:w-full min-[880px]:min-w-[360px] min-[880px]:max-w-[360px]">
               {/* Cover image area */}
               <div className="h-16 "></div>
+
+            
               
               {/* Profile content */}
               <div className="px-6 py-6 ">
@@ -82,13 +84,13 @@ const ProfileCard = () => {
                   <div className="mb-6">
                     <h3 className="text-gray-400 mb-2">Social Links</h3>
                     <div className="flex justify-center gap-4">
-                      <a href="#" className="text-gray-400 hover:text-white transition-colors">
+                      <a href="#" className="text-gray-400 hover:text-white transition-colors hover:scale-110 hover:shadow-lg hover:shadow-black">
                         <FaTwitter size={20} />
                       </a>
-                      <a href="#" className="text-gray-400 hover:text-white transition-colors">
+                      <a href="#" className="text-gray-400 hover:text-white transition-colors hover:scale-110 hover:shadow-lg hover:shadow-black">
                         <FaGithub size={20} />
                       </a>
-                      <a href="#" className="text-gray-400 hover:text-white transition-colors">
+                      <a href="#" className="text-gray-400 hover:text-white transition-colors hover:scale-110 hover:shadow-lg hover:shadow-black">
                         <FaGlobe size={20} />
                       </a>
                     </div>
@@ -108,11 +110,9 @@ const ProfileCard = () => {
                 </div>
               </div>
             </div>
-    
-            
           </div>
         </div>
-      );
+          );
 }
 
 export default ProfileCard

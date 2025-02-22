@@ -28,7 +28,7 @@ const ProfilePage = () => {
           <Sidebar />
           <div className="w-full">
             <Navbar />
-            <div className="flex overflow-y-scroll overflow-x-hidden max-h-full w-full h-screen p-5 items-start gap-5 max-md:flex-col">
+            <div className="flex overflow-y-scroll overflow-x-hidden max-h-full w-full p-5 items-start gap-5 max-[880px]:flex-col h-[calc(100vh-64px)] max-md:h-[calc(100vh-119px)]">
 
                 {
                     (userLogined) ? 
