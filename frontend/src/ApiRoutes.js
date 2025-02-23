@@ -14,3 +14,7 @@ export const GET_ALL_POST_URL = `${import.meta.env.VITE_API_BASE_URL}api/posts/a
 export const GET_ALL_USER_DETAILS = `${import.meta.env.VITE_API_BASE_URL}api/users/uid/profile/me/`
 
 export const UPLOAD_POST_URL = `${import.meta.env.VITE_API_BASE_URL}api/posts/newPost`
+
+export const DELETE_POST_URL = (pid) => {
+    return `${import.meta.env.VITE_API_BASE_URL}api/posts/deletePost/${pid}`
+}

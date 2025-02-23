@@ -6,6 +6,8 @@ import { UploadPicture } from "../utils/CloudinaryHandlers"
 import LoaderwaveComponent from "./Loaderwave"
 import axios from "axios"
 import { UPLOAD_POST_URL } from "../ApiRoutes"
+import { FetchUserProfile } from "../utils/AuthFunctions"
+import { useNavigate } from "react-router-dom"
 
 
 
@@ -17,6 +19,8 @@ export default function ContentEditor() {
   const [thumbnail, setThumbnail] = useState(null);
   const [thumbnailImage, setThumbnailImage] = useState(null);
   const [isUploading, setIsUploading] = useState(false);
+
+  const navigate = useNavigate();
 
   const handleContentChange = (e) => {
     setContent(e.target.value)
@@ -40,7 +44,7 @@ export default function ContentEditor() {
 
       setIsUploading(true)
       const url = await UploadPicture(thumbnailImage);
-      axios.post(UPLOAD_POST_URL, 
+      const data = await axios.post(UPLOAD_POST_URL, 
         {
           user_id : uid,
           title: heading,
@@ -53,7 +57,9 @@ export default function ContentEditor() {
       )
 
       if (url) {
+        await FetchUserProfile()
         setIsUploading(false)
+        navigate('/profile')
       }
       setHeading("")
       setContent("")

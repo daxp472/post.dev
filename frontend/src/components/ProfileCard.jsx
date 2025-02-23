@@ -61,7 +61,7 @@ const ProfileCard = () => {
                   {/* Stats */}
                   <div className="grid grid-cols-3 gap-4 mb-6">
                     <div>
-                      <p className="text-white font-bold">{ProfileData.followersCount}</p>
+                      <p className="text-white font-bold">{(ProfileData.posts)?ProfileData.posts.length:0}</p>
                       <p className="text-gray-400 text-sm">Posts</p>
                     </div>
                     <div>

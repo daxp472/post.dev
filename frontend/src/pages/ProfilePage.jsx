@@ -11,24 +11,18 @@ const ProfilePage = () => {
 
     const [userLogined, setUserLogined] = useState(false);
     const [ProfileData, setProfileData] = useState({})
+    const [refreshCount, setRefreshCount] = useState(0);
 
-    useEffect(()=>{
-        (async()=>{
+    useEffect(() => {
+        (async () => {
             const serverResponse = await UserProfileStorageGetter("postDevUserConfigs");
             const parsedData = JSON.parse(serverResponse.data);
-            setProfileData((prev) => parsedData);
-            if(parsedData){
+            setProfileData(parsedData); // Update ProfileData with fresh data
+            if (parsedData) {
                 setUserLogined(true);
             }
-            console.log("updating ....")
-            console.log(await Fetch_my_profile())
-            console.log(await parsedData)
-            console.log("updating.. ends..")
-        })()
-
-        
-
-    }, [])
+        })();
+    }, [refreshCount]); // This will trigger the effect whenever refreshCount changes
 
     return (
         <div className="min-h-screen max-h-screen bg-[#0a0a0a] bg-[radial-gradient(ellipse_80%_80%_at_50%_-20%,rgba(120,119,198,0.3),rgba(255,255,255,0))] w-screen flex overflow-hidden">
@@ -40,8 +34,8 @@ const ProfilePage = () => {
                 {
                     (userLogined) ? 
                     <>
-                        <ProfileCard UserData = {ProfileData} />
-                        <UserPostContainer />
+                        <ProfileCard UserData = {ProfileData}  />
+                        <UserPostContainer Posts = {ProfileData.posts} Refresher = {setRefreshCount} />
                     </> :
                     <>
                         <ProfileError
