@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import LandingPage from './pages/LandingPage';
 import { Router } from 'lucide-react';
 import Navbar from './components/Navbar';
@@ -6,31 +6,35 @@ import Sidebar from './components/SidebarComponent';
 import GenericCardComponent from './components/GenericPostCard';
 import axios from 'axios'
 import Loader from './components/Loader';
+import { GET_ALL_POST_URL } from './ApiRoutes';
 
 function App() {
   const [Initialdata, setInitialdata] = useState([])
   const [isLoading, setIsLoading] = useState(true);
-  const fetchInitailData = async() => {
-    const ResponseData = await axios.get("https://post-dev.onrender.com/api/posts/allPosts")
-    setInitialdata(ResponseData.data.data);
-    console.log(ResponseData.data.data)
-    console.log("initialdata")
-    console.log(Initialdata)
-  }
+  const fetchInitailData = useCallback(
+    async() => {
+      const ResponseData = await axios.get(GET_ALL_POST_URL)
+      setInitialdata(ResponseData.data.data);
+      console.log(ResponseData.data.data)
+      console.log("initialdata")
+      console.log(Initialdata)
+      setIsLoading((prev)=>!prev);
+    },
+    [Initialdata],
+  )
+  
 
   useEffect(()=>{
     console.log("fetching...")
     fetchInitailData()
-      setIsLoading((prev)=>!prev);
-    
   }, [])
 
   return (
-    <div className="min-h-screen max-h-screen bg-[#0a0a0a] bg-[radial-gradient(ellipse_80%_80%_at_50%_-20%,rgba(120,119,198,0.3),rgba(255,255,255,0))] w-screen flex overflow-hidden">
+    <div className="h-screen bg-[#0a0a0a] bg-[radial-gradient(ellipse_80%_80%_at_50%_-20%,rgba(120,119,198,0.3),rgba(255,255,255,0))] w-screen flex overflow-hidden">
       <Sidebar />
-      <div className="w-full">
+      <div className="w-full ">
         <Navbar />
-        <div className="w-full flex flex-col items-center overflow-y-scroll max-h-full">
+        <div className="w-full flex flex-col items-center overflow-y-scroll h-[calc(100vh-64px)]  ">
           {
             (isLoading)?
             (
@@ -39,14 +43,14 @@ function App() {
               </div>
             )
             :
-            (<div className="w-fit pb-[95px]  grid grid-cols-4 p-5 gap-10 max-2xl:grid-cols-3 max-xl:grid-cols-2">
+            (<div className="w-full max-md:pb-[95px]  grid grid-cols-4 p-5 gap-10 max-[1760px]:grid-cols-3 max-[1345px]:grid-cols-2 max-[810px]:grid-cols-1 max-md:gap-5">
               {
                 Initialdata.map((post, index)=>{
                   return (
                     <GenericCardComponent
                       title={post.title}
                       desc={post.desc}
-                      image={"dfsdfsdfd"}
+                      image={post.image}
                       likes_count={post.likes_count}
                       comments_count={post.comments.length}
                       key={index}

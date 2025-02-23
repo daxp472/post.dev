@@ -1,18 +1,22 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import axios from 'axios';
-import { toast } from 'react-hot-toast';
 import {
   Users, MapPin, Link as LinkIcon, Twitter, Github, Mail,
   Edit, AlertTriangle, RefreshCw
 } from 'lucide-react';
 import ProfileError from '../AdditionalNecessaryElements/ProfileError';
+import { FetchUserProfile } from '../utils/AuthFunctions';
+import { UserProfileStorageGetter } from '../utils/localStorageEncrypter';
+import { UPDATE_USER_PROFILE_URL } from '../ApiRoutes';
+import Loader from './Loader';
+import { ToastContainer, toast } from 'react-toastify';
 
 // Utility function for generating avatar
 const generateAvatar = (username) =>
   `https://api.dicebear.com/7.x/avataaars/svg?seed=${username || 'anonymous'}`;
 
 // Initial state structure
-const INITIAL_USER_STATE = {
+let INITIAL_USER_STATE = {
   username: '',
   fullName: '',
   email: '',
@@ -40,6 +44,8 @@ const INITIAL_EDIT_STATE = {
   }
 };
 
+
+
 const ProfileSectionComponent = () => {
   // State Management
   const [userData, setUserData] = useState(INITIAL_USER_STATE);
@@ -49,53 +55,35 @@ const ProfileSectionComponent = () => {
   const [errorMessage, setErrorMessage] = useState('');
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [isLoggedIn, setisLoggedIn] = useState(false);
+  const [isUpdatingProfile, setIsUpdatingProfile] = useState(false);
 
   // Fetch User Profile
   const fetchUserProfile = useCallback(async () => {
     const uid = localStorage.getItem('POST.dev@accessToken');
 
-    if(uid){
-      setisLoggedIn((prev)=>!prev);
+    if (!uid) {
+      setisLoggedIn(false);
+      return;
     }
 
-    console.log(uid);
-
     try {
-      setIsLoading(true);
-      const response = await axios.get(
-        `https://post-dev.onrender.com/api/users/${uid}/profile`,
-        {
-          headers: { Authorization: uid },
-        }
-      );
+      const serverResponse = await UserProfileStorageGetter("postDevUserConfigs");
+      const parsedData = JSON.parse(serverResponse.data);
 
-      const profileData = response.data.data;
-
-
-      setUserData({
-        username: profileData.username || '',
-        fullName: `${profileData.firstname || ''} ${profileData.lastname || ''}`.trim(),
-        email: profileData.email || '',
-        avatar: profileData.avatar || generateAvatar(profileData.username),
-        bio: profileData.bio || '',
-        title: profileData.title || '',
-        followersCount: profileData.followers_count || 0,
-        followingCount: profileData.following_count || 0,
-        socialLinks: {
-          twitter: profileData.socialLinks?.twitter || '',
-          github: profileData.socialLinks?.github || '',
-          portfolio: profileData.socialLinks?.portfolio || ''
-        }
-      });
-
-      setIsLoading(false);
-      setIsError(false);
+      if (parsedData.status === 201) {
+        setUserData(parsedData);
+        setIsLoading(false);
+        setisLoggedIn(true);
+      } else {
+        setIsError(true);
+        setErrorMessage('Failed to fetch profile');
+        setIsLoading(false);
+      }
     } catch (error) {
       console.error('Profile fetch error:', error);
-      setIsLoading(false);
       setIsError(true);
-      setErrorMessage(error.response?.data?.message || 'Failed to load profile');
-      toast.error('Could not fetch profile details');
+      setErrorMessage('Failed to fetch profile');
+      setIsLoading(false);
     }
   }, []);
 
@@ -134,11 +122,12 @@ const ProfileSectionComponent = () => {
   // Submit Profile Update
   const handleProfileUpdate = async (e) => {
     e.preventDefault();
+    setIsUpdatingProfile((prev) => !prev);
     const uid = localStorage.getItem('POST.dev@accessToken');
 
     try {
       await axios.put(
-        `https://post-dev.onrender.com/api/users/${uid}/profile/update`,
+        UPDATE_USER_PROFILE_URL(uid),
         {
           firstname: editFormData.firstname,
           lastname: editFormData.lastname,
@@ -157,12 +146,25 @@ const ProfileSectionComponent = () => {
         socialLinks: editFormData.socialLinks
       }));
 
-      toast.success('Profile updated successfully');
       setIsEditModalOpen(false);
+      setIsUpdatingProfile((prev) => !prev);
+      toast("Profile Updated Successfully", {style : {
+        backgroundColor: '#21212A',    // Dark background
+        color: '#fff',              // White text
+        borderRadius: '10px',       // Rounded corners
+        padding: '15px',            // Padding around toast
+        fontSize: '16px',           // Font size
+        boxShadow: '0 4px 6px rgba(0, 0, 0, 0.3)', // Add shadow for effect
+      }, progressStyle: {
+        background: '#4caf50', // Green progress bar for success
+      }
+    })
     } catch (error) {
       console.error('Profile update error:', error);
-      toast.error('Failed to update profile');
     }
+
+    await FetchUserProfile()
+
   };
 
   // Initial Data Fetch
@@ -180,14 +182,16 @@ const ProfileSectionComponent = () => {
   return (
     <div className="min-h-screen bg-[#18181E] text-gray-100 flex justify-center py-12  w-full">
 
+      <ToastContainer />
+
       {!isLoggedIn && (
-        <ProfileError 
-          title="Profile Access Denied" 
-          message="Please log in to view your profile details" 
+        <ProfileError
+          title="Profile Access Denied"
+          message="Please log in to view your profile details"
         />
       )}
 
-      <div className={`container  w-full px-4 ${(!isLoggedIn)?'hidden':'block'}`}>
+      <div className={`container  w-full px-4 ${(!isLoggedIn) ? 'hidden' : 'block'}`}>
         <div className="bg-[#1f1f28] w-full border-gray-700 rounded-3xl shadow-2xl overflow-hidden transform transition-all duration-300 hover:scale-[1.02]">
           <div className="relative">
             {/* Background Gradient Overlay */}
@@ -200,7 +204,7 @@ const ProfileSectionComponent = () => {
                 <div className="relative mb-4">
                   <div className="w-40 h-40 md:w-48 md:h-48 rounded-full overflow-hidden border-4 border-gray-700 shadow-lg transform transition-transform duration-300 hover:scale-105">
                     <img
-                      src={userData.avatar || 'https://static.vecteezy.com/system/resources/thumbnails/004/899/680/small/beautiful-blonde-woman-with-makeup-avatar-for-a-beauty-salon-illustration-in-the-cartoon-style-vector.jpg'}
+                      src={(!userData.avatar)? userData.avatar : "https://cdn-icons-png.flaticon.com/512/149/149071.png"}
                       alt={`Profile of ${userData?.fullName || 'User'}`}
                       className="w-full h-full object-cover"
                       onError={(e) => { e.target.src = '/default-avatar.png' }}
@@ -317,13 +321,13 @@ const ProfileSectionComponent = () => {
                   )}
 
                   <div className='w-full'>
-                  <button
-                    onClick={handleEditModalOpen}
-                    className="px-6 py-3 bg-blue-600 text-white rounded-full text-base hover:bg-blue-700 transition-colors flex items-center justify-center gap-2 shadow-md"
-                  >
-                    <Edit size={18} />
-                    Edit Profile
-                  </button>
+                    <button
+                      onClick={handleEditModalOpen}
+                      className="px-6 py-3 bg-blue-600 text-white rounded-full text-base hover:bg-blue-700 transition-colors flex items-center justify-center gap-2 shadow-md"
+                    >
+                      <Edit size={18} />
+                      Edit Profile
+                    </button>
                   </div>
 
                 </div>
@@ -335,71 +339,87 @@ const ProfileSectionComponent = () => {
         {/* Edit Profile Modal */}
         {isEditModalOpen && (
           <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-            <div className="bg-[#22222C] rounded-xl w-full max-w-md mx-4 p-6 max-h-[90vh] overflow-y-auto">
-              <h2 className="text-xl font-semibold text-white mb-6">Edit Profile</h2>
-              <form onSubmit={handleProfileUpdate} className="space-y-4">
-                <div>
-                  <label className="block text-gray-300 text-sm mb-2">First Name</label>
-                  <input
-                    type="text"
-                    name="firstname"
-                    value={editFormData.firstname}
-                    onChange={handleFormChange}
-                    className="w-full bg-[#18181E] text-gray-100 border border-gray-700 rounded-md px-3 py-2"
-                    placeholder="Enter first name"
-                    required
-                  />
-                </div>
-                <div>
-                  <label className="block text-gray-300 text-sm mb-2">Last Name</label>
-                  <input
-                    type="text"
-                    name="lastname"
-                    value={editFormData.lastname}
-                    onChange={handleFormChange}
-                    className="w-full bg-[#18181E] text-gray-100 border border-gray-700 rounded-md px-3 py-2"
-                    placeholder="Enter last name"
-                    required
-                  />
-                </div>
-                <div>
-                  <label className="block text-gray-300 text-sm mb-2">Bio</label>
-                  <textarea
-                    name="bio"
-                    value={editFormData.bio}
-                    onChange={handleFormChange}
-                    className="w-full bg-[#18181E] text-gray-100 border border-gray-700 rounded-md px-3 py-2 min-h-[100px]"
-                    placeholder="Tell us about yourself"
-                  />
-                </div>
-                <div>
-                  <label className="block text-gray-300 text-sm mb-2">Title</label>
-                  <input
-                    type="text"
-                    name="title"
-                    value={editFormData.title}
-                    onChange={handleFormChange}
-                    className="w-full bg-[#18181E] text-gray-100 border border-gray-700 rounded-md px-3 py-2"
-                    placeholder="Your professional title"
-                  />
-                </div>
+            <div className={`bg-[#22222C] rounded-xl w-full max-w-md mx-4 p-6 max-h-[90vh] overflow-y-auto ${(isUpdatingProfile)?"w-fit aspect-square flex items-center justify-center":""}`}>
+              {
+                (isUpdatingProfile) ? 
+                  (
+                    <div className='flex flex-col gap-3 items-center'>
+                      <Loader />
+                      <p className="animate-pulse text-gray-300">Updating</p>
+                    </div>
+                  )
+                :
+                  (
+                    <>
 
-                <div className="flex justify-end space-x-3">
-                  <button
-                    type="button"
-                    onClick={() => setIsEditModalOpen(false)}
-                    className="px-4 py-2 bg-gray-700 text-gray-300 rounded-md hover:bg-gray-600"
-                  >
-                    Cancel
-                  </button>
-                  <button
-                    type="submit"
-                    className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700"
-                  >
-                    Save Changes
-                  </button>
-                </div>
-              </form>
+                      <h2 className="text-xl font-semibold text-white mb-6">Edit Profile</h2>
+                      <form onSubmit={handleProfileUpdate} className="space-y-4">
+                        <div>
+                          <label className="block text-gray-300 text-sm mb-2">First Name</label>
+                          <input
+                            type="text"
+                            name="firstname"
+                            value={editFormData.firstname}
+                            onChange={handleFormChange}
+                            className="w-full bg-[#18181E] text-gray-100 border border-gray-700 rounded-md px-3 py-2"
+                            placeholder="Enter first name"
+                            required
+                          />
+                        </div>
+                        <div>
+                          <label className="block text-gray-300 text-sm mb-2">Last Name</label>
+                          <input
+                            type="text"
+                            name="lastname"
+                            value={editFormData.lastname}
+                            onChange={handleFormChange}
+                            className="w-full bg-[#18181E] text-gray-100 border border-gray-700 rounded-md px-3 py-2"
+                            placeholder="Enter last name"
+                            required
+                          />
+                        </div>
+                        <div>
+                          <label className="block text-gray-300 text-sm mb-2">Bio</label>
+                          <textarea
+                            name="bio"
+                            value={editFormData.bio}
+                            onChange={handleFormChange}
+                            className="w-full bg-[#18181E] text-gray-100 border border-gray-700 rounded-md px-3 py-2 min-h-[100px]"
+                            placeholder="Tell us about yourself"
+                          />
+                        </div>
+                        <div>
+                          <label className="block text-gray-300 text-sm mb-2">Title</label>
+                          <input
+                            type="text"
+                            name="title"
+                            value={editFormData.title}
+                            onChange={handleFormChange}
+                            className="w-full bg-[#18181E] text-gray-100 border border-gray-700 rounded-md px-3 py-2"
+                            placeholder="Your professional title"
+                          />
+                        </div>
+
+                        <div className="flex justify-end space-x-3">
+                          <button
+                            type="button"
+                            onClick={() => setIsEditModalOpen(false)}
+                            className="px-4 py-2 bg-gray-700 text-gray-300 rounded-md hover:bg-gray-600"
+                          >
+                            Cancel
+                          </button>
+                          <button
+                            type="submit"
+                            className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700"
+                          >
+                            Save Changes
+                          </button>
+                        </div>
+                      </form>
+
+                    </>
+                  )
+              }
             </div>
           </div>
         )}
@@ -409,3 +429,4 @@ const ProfileSectionComponent = () => {
 };
 
 export default ProfileSectionComponent;
+

@@ -1,6 +1,6 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import {
   IoSearch,
   IoNotificationsOutline
@@ -11,11 +11,21 @@ import {
   FaCog,
   FaSignOutAlt
 } from "react-icons/fa"
+import { UserProfileStorageGetter } from '../utils/localStorageEncrypter'
+import { LogoutUser } from '../utils/AuthFunctions'
 
 export default function Navbar() {
+
   // State management for hover interactions
   const [isProfileHovered, setIsProfileHovered] = useState(false);
   const [isCardHovered, setIsCardHovered] = useState(false);
+  const [isUserLogined, setIsUserLogined] = useState(false);
+  const [UserMiniCardData, setUserMiniCardData] = useState({username:"", name:"", profile:""});
+
+  const navigate = useNavigate()
+
+
+
 
   // Handler for profile icon hover
   const handleProfileHover = () => {
@@ -43,6 +53,26 @@ export default function Navbar() {
     setIsCardHovered(false);
     setIsProfileHovered(false);
   }
+
+
+  //Fetching User Details...
+  useEffect(() => {
+    // console.log(user)
+    (async()=>{
+      try {
+        const serverResponse = await UserProfileStorageGetter("postDevUserConfigs");
+        const parsedData = JSON.parse(serverResponse.data)
+        console.log(parsedData)
+        setUserMiniCardData({
+          username: parsedData.username,
+          name: parsedData.fullName,
+          profile: parsedData.avatar,
+        });
+      } catch (error) {
+        setIsUserLogined(true)
+      }
+    })()
+  }, [])
 
   return (
     // Main navigation bar with border, background, and blur effect
@@ -72,7 +102,7 @@ export default function Navbar() {
           </div>
 
           {/* Search section with input and search icon */}
-          <div className="flex-1 px-20">
+          <div className="flex-1 px-20 max-sm:hidden">
             <div className="relative">
               <IoSearch className="absolute left-3 top-1/2 h-5 w-5 -translate-y-1/2 text-zinc-400" />
               <input
@@ -86,86 +116,110 @@ export default function Navbar() {
           {/* Right section with action buttons */}
           <div className="flex items-center gap-4">
             {/* New Post button */}
-            <button className="rounded-full bg-white px-4 py-1.5 text-sm font-medium text-black transition-colors hover:bg-zinc-200">
+            <button className="max-md:hidden rounded-full bg-white px-4 py-1.5 text-sm font-medium text-black transition-colors hover:bg-zinc-200">
               New Post
             </button>
 
             {/* Notifications button */}
-            <button className="rounded-full p-2 text-zinc-400 transition-colors hover:bg-zinc-800 hover:text-white">
+            <button className="max-md:hidden rounded-full p-2 text-zinc-400 transition-colors hover:bg-zinc-800 hover:text-white">
               <IoNotificationsOutline className="h-6 w-6" />
             </button>
 
             {/* Profile section with hover card */}
-            <div
-              className="relative"
-              onMouseEnter={handleProfileHover}
-              onMouseLeave={handleProfileLeave}
-            >
-              {/* Profile icon button */}
-              <button className="rounded-full p-2 text-zinc-400 transition-colors hover:bg-zinc-800 hover:text-white">
-                <FaRegUserCircle className="h-6 w-6" />
-              </button>
+            {
+              isUserLogined ? 
+                <Link to={'/auth/register'} ><button className='p-3 px-5 text-white font-black rounded-md bg-gray-800 cursor-pointer'>Signup</button></Link>
+              :
+                (
+                  <>
+                    <div
+                      className="relative"
+                      onMouseEnter={handleProfileHover}
+                      onMouseLeave={handleProfileLeave}
+                    >
+                      {/* Profile icon button */}
+                      <button className="rounded-full p-2 text-zinc-400 transition-colors hover:bg-zinc-800 hover:text-white">
+                        <FaRegUserCircle className="h-6 w-6" />
+                      </button>
 
-              {/* Animated Profile Dropdown Card */}
-              <AnimatePresence>
-                {isProfileHovered && (
-                  <motion.div
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, y: 20 }}
-                    transition={{ type: "spring", stiffness: 300, damping: 30 }}
-                    // Highest z-index to ensure card is above all elements
-                    className="absolute right-0 top-full mt-4 z-[99999] w-72"
-                    onMouseEnter={handleCardHoverEnter}
-                    onMouseLeave={handleCardHoverLeave}
-                  >
-                    {/* Profile card container */}
-                    <div className="bg-zinc-800 rounded-2xl shadow-2xl border border-zinc-700 overflow-hidden">
-                      {/* Profile header with avatar and name */}
-                      <div className="p-6 bg-zinc-900/50 backdrop-blur-xl">
-                        <div className="flex items-center space-x-4">
-                          {/* Gradient avatar */}
-                          <div className="w-16 h-16 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full flex items-center justify-center">
-                            <FaUser className="text-white text-2xl" />
-                          </div>
-                          {/* User details */}
-                          <div>
-                            <h3 className="text-white font-bold text-lg">John Doe</h3>
-                            <p className="text-zinc-400 text-sm">@johndoe</p>
-                          </div>
-                        </div>
-                      </div>
+                      {/* Animated Profile Dropdown Card */}
+                      <AnimatePresence>
+                        {isProfileHovered && (
+                          <motion.div
+                            initial={{ opacity: 0, y: 20 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            exit={{ opacity: 0, y: 20 }}
+                            transition={{ type: "spring", stiffness: 300, damping: 30 }}
+                            // Highest z-index to ensure card is above all elements
+                            className="absolute right-0 top-full mt-4 z-[99999] w-72"
+                            onMouseEnter={handleCardHoverEnter}
+                            onMouseLeave={handleCardHoverLeave}
+                          >
+                            {/* Profile card container */}
+                            <div className="bg-zinc-800 rounded-2xl shadow-2xl border border-zinc-700 overflow-hidden">
+                              {/* Profile header with avatar and name */}
+                              {
+                                  (
+                                    <>
 
-                      {/* Dropdown menu items */}
-                      <div className="p-2">
-                        {/* Profile link */}
-                        <Link
-                          to="/profile"
-                          className="block px-4 py-2.5 text-white hover:bg-zinc-700 rounded-lg transition-colors flex items-center"
-                        >
-                          <FaUser className="mr-3" /> My Profile
-                        </Link>
+                                      <div className="p-6 bg-zinc-900/50 backdrop-blur-xl">
+                                        <div className="flex items-center space-x-4">
+                                          {/* Gradient avatar */}
+                                          <div className="w-16 h-16 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full flex items-center justify-center overflow-hidden">
+                                            <img src={(UserMiniCardData.profile == "") ? UserMiniCardData.profile : "https://cdn-icons-png.flaticon.com/512/149/149071.png"} alt="" />
+                                          </div>
+                                          {/* User details */}
+                                          <div>
+                                            <h3 className="text-white font-bold text-lg">{UserMiniCardData.name}</h3>
+                                            <p className="text-zinc-400 text-sm">@{UserMiniCardData.username}</p>
+                                          </div>
+                                        </div>
+                                      </div>
 
-                        {/* Settings link */}
-                        <Link
-                          to="/settings"
-                          className="block px-4 py-2.5 text-white hover:bg-zinc-700 rounded-lg transition-colors flex items-center"
-                        >
-                          <FaCog className="mr-3" /> Settings
-                        </Link>
+                                      {/* Dropdown menu items */}
+                                      <div className="p-2">
+                                        {/* Profile link */}
+                                        <Link
+                                          to="/profile"
+                                          className=" px-4 py-2.5 text-white hover:bg-zinc-700 rounded-lg transition-colors flex items-center"
+                                        >
+                                          <FaUser className="mr-3" /> My Profile
+                                        </Link>
 
-                        {/* Logout button */}
-                        <button
-                          className="w-full text-left px-4 py-2.5 text-red-400 hover:bg-zinc-700 rounded-lg transition-colors flex items-center"
-                        >
-                          <FaSignOutAlt className="mr-3" /> Logout
-                        </button>
-                      </div>
+                                        {/* Settings link */}
+                                        <Link
+                                          to="/more/settings"
+                                          className=" px-4 py-2.5 text-white hover:bg-zinc-700 rounded-lg transition-colors flex items-center"
+                                        >
+                                          <FaCog className="mr-3" /> Settings
+                                        </Link>
+
+                                        {/* Logout button */}
+                                        <button
+                                          className="w-full text-left px-4 py-2.5 text-red-400 hover:bg-zinc-700 rounded-lg transition-colors flex items-center cursor-pointer"
+                                          onClick={()=>{LogoutUser()
+                                            console.log(window.location.hostname)
+                                            navigate('/auth/login')
+                                          }}
+                                        >
+                                          <FaSignOutAlt className="mr-3" /> Logout
+                                        </button>
+                                      </div>
+
+                                    
+
+                                    </>
+                                  )
+                              }
+                            </div>
+                          </motion.div>
+                        )}
+                      </AnimatePresence>
                     </div>
-                  </motion.div>
-                )}
-              </AnimatePresence>
-            </div>
+                  </>
+                )
+            }
+
           </div>
         </div>
       </nav>
