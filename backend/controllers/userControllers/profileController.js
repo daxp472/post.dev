@@ -92,7 +92,7 @@ export const getCurrentUserProfile = async (req, res) => {
 // Update user profile
 export const updateProfile = async (req, res) => {
     try {
-        const { firstname, lastname, title, bio, visibility } = req.body;
+        const { firstname, lastname, title, bio, visibility, profileimage } = req.body;
         const user = await User.findById(req.params.uid);
 
         if (!user) {
@@ -108,6 +108,7 @@ export const updateProfile = async (req, res) => {
         if (title) user.title = title;
         if (bio) user.bio = bio;
         if (visibility) user.visibility = visibility;
+        if (profileimage) user.avatar = profileimage;
 
         await user.save();
 
@@ -120,7 +121,8 @@ export const updateProfile = async (req, res) => {
                 lastname: user.lastname,
                 title: user.title,
                 bio: user.bio,
-                visibility: user.visibility
+                visibility: user.visibility,
+                avatar: user.avatar
             }
         });
     } catch (error) {
