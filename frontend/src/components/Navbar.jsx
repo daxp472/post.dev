@@ -139,7 +139,9 @@ export default function Navbar() {
                     >
                       {/* Profile icon button */}
                       <button className="rounded-full p-2 text-zinc-400 transition-colors hover:bg-zinc-800 hover:text-white">
-                        <FaRegUserCircle className="h-6 w-6" />
+                      <div className="w-10 h-10 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full flex items-center justify-center overflow-hidden">
+                                            <img src={(UserMiniCardData.profile != "") ? UserMiniCardData.profile : "https://cdn-icons-png.flaticon.com/512/149/149071.png"} alt="" className="w-full h-full object-cover" />
+                                          </div>
                       </button>
 
                       {/* Animated Profile Dropdown Card */}
@@ -161,12 +163,11 @@ export default function Navbar() {
                               {
                                   (
                                     <>
-
                                       <div className="p-6 bg-zinc-900/50 backdrop-blur-xl">
                                         <div className="flex items-center space-x-4">
                                           {/* Gradient avatar */}
                                           <div className="w-16 h-16 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full flex items-center justify-center overflow-hidden">
-                                            <img src={(UserMiniCardData.profile == "") ? UserMiniCardData.profile : "https://cdn-icons-png.flaticon.com/512/149/149071.png"} alt="" />
+                                            <img src={(UserMiniCardData.profile != "") ? UserMiniCardData.profile : "https://cdn-icons-png.flaticon.com/512/149/149071.png"} alt="" className="w-full h-full object-cover" />
                                           </div>
                                           {/* User details */}
                                           <div>

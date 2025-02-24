@@ -34,6 +34,9 @@ export const FetchUserProfile = async () => {
             }
         );
         const profileData = response.data.data;
+        console.log("working")
+        console.log(response.data.data.avatar)
+        console.log("work end")
 
         // Construct the new profile object
         const newProfile = {

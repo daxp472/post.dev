@@ -22,6 +22,7 @@ const ProfileCard = () => {
             const parsedData = JSON.parse(serverResponse.data);
             console.log(parsedData)
             setProfileData(parsedData);
+            console.log(parsedData)
         })()
     }, [])
 
@@ -45,7 +46,7 @@ const ProfileCard = () => {
                 <div className="relative -mt-16 mb-4 flex justify-center">
                   <div className="relative">
                     <img
-                      src={(ProfileData.profileImage) ? ProfileData.profileImage : "https://cdn-icons-png.flaticon.com/512/149/149071.png"}
+                      src={(ProfileData.avatar) ? ProfileData.avatar : "https://cdn-icons-png.flaticon.com/512/149/149071.png"}
                       alt="Profile"
                       className="w-32 h-32 rounded-full border-4 border-gray-800 bg-gray-800"
                     />
