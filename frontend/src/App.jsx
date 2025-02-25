@@ -57,10 +57,14 @@ function App() {
               {
                 Initialdata.map((post, index)=>{
                   let isliked = false;
-                  if(userPersonalData.likedPosts.map((post)=>post._id).includes(post._id)){
-                    isliked = true
-                  }else{
-                    isliked = false
+                  try {
+                    if(userPersonalData.likedPosts.map((post)=>post._id).includes(post._id)){
+                      isliked = true
+                    }else{
+                      isliked = false
+                    }
+                  } catch (error) {
+                    
                   }
                   return (
                     <>
