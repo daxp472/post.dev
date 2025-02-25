@@ -7,26 +7,36 @@ import GenericCardComponent from './components/GenericPostCard';
 import axios from 'axios'
 import Loader from './components/Loader';
 import { GET_ALL_POST_URL } from './ApiRoutes';
+import { UserProfileStorageGetter } from './utils/localStorageEncrypter';
 
 function App() {
   const [Initialdata, setInitialdata] = useState([])
   const [isLoading, setIsLoading] = useState(true);
+  const [userPersonalData, setUserPersonalData] = useState(null);
+  const [userLikedPosts, setUserLikedPosts] = useState([]);
   const fetchInitailData = useCallback(
     async() => {
       const ResponseData = await axios.get(GET_ALL_POST_URL)
       setInitialdata(ResponseData.data.data);
-      console.log(ResponseData.data.data)
-      console.log("initialdata")
-      console.log(Initialdata)
       setIsLoading((prev)=>!prev);
     },
     [Initialdata],
   )
   
+  const getUserStoredData = async ()=> {
+    setUserPersonalData(JSON.parse((await UserProfileStorageGetter("postDevUserConfigs")).data))
+  }
 
   useEffect(()=>{
-    console.log("fetching...")
+    getUserStoredData()
     fetchInitailData()
+    try {
+      setUserLikedPosts(userPersonalData.likedPosts)
+      console.log(userLikedPosts)
+    console.log(userLikedPosts)
+    } catch (error) {
+      
+    }
   }, [])
 
   return (
@@ -46,6 +56,12 @@ function App() {
             (<div className="w-full max-md:pb-[95px]  grid grid-cols-4 p-5 gap-10 max-[1760px]:grid-cols-3 max-[1345px]:grid-cols-2 max-[810px]:grid-cols-1 max-md:gap-5">
               {
                 Initialdata.map((post, index)=>{
+                  let isliked = false;
+                  if(userPersonalData.likedPosts.map((post)=>post._id).includes(post._id)){
+                    isliked = true
+                  }else{
+                    isliked = false
+                  }
                   return (
                     <>
                     <GenericCardComponent
@@ -56,6 +72,7 @@ function App() {
                       comments_count={post.comments.length}
                       postID={post._id}
                       key={index}
+                      isLiked={isliked}
                     />
                     </>
                   )

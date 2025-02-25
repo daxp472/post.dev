@@ -4,14 +4,15 @@ import { useState } from "react"
 import { LIKE_A_POST_URL, UNLIKE_A_POST_URL } from "../ApiRoutes";
 import { FetchUserProfile } from "../utils/AuthFunctions";
 
-export default function GenericCardComponent({title, desc, image, likes_count, comments_count, postID }) {
-  const [liked, setLiked] = useState(false);
+export default function GenericCardComponent({title, desc, image, likes_count, comments_count, postID, isLiked=false }) {
+  const [liked, setLiked] = useState(isLiked);
   const [bookmarked, setBookmarked] = useState(false);
   const [currentLikes, setCurrentLikes] = useState(likes_count);
 
   const handleLikeToggle = async() => {
     const uid = localStorage.getItem('POST.dev@accessToken');
     setLiked(!liked);
+    setCurrentLikes(liked ? currentLikes - 1 : currentLikes + 1);
     if(liked){
       UNLIKE_A_POST_URL
       try {
@@ -39,7 +40,7 @@ export default function GenericCardComponent({title, desc, image, likes_count, c
         await FetchUserProfile()
       }
     }
-    setCurrentLikes(liked ? currentLikes - 1 : currentLikes + 1);
+    
   };
 
   const handleBookmarkToggle = () => {
