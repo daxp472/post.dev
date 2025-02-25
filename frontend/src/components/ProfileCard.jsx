@@ -44,11 +44,11 @@ const ProfileCard = () => {
               <div className="px-6 py-6 ">
                 {/* Avatar */}
                 <div className="relative -mt-16 mb-4 flex justify-center">
-                  <div className="relative">
+                  <div className="relative w-32 h-32 rounded-full border-4 border-gray-800 bg-gray-800">
                     <img
                       src={(ProfileData.avatar) ? ProfileData.avatar : "https://cdn-icons-png.flaticon.com/512/149/149071.png"}
                       alt="Profile"
-                      className="w-32 h-32 rounded-full border-4 border-gray-800 bg-gray-800"
+                      className="w-full h-full object-cover rounded-full"
                     />
                     <div className="absolute bottom-2 right-2 w-4 h-4 bg-green-500 rounded-full border-2 border-gray-800"></div>
                   </div>

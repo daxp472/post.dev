@@ -47,14 +47,17 @@ function App() {
               {
                 Initialdata.map((post, index)=>{
                   return (
+                    <>
                     <GenericCardComponent
                       title={post.title}
                       desc={post.desc}
                       image={post.image}
                       likes_count={post.likes_count}
                       comments_count={post.comments.length}
+                      postID={post._id}
                       key={index}
                     />
+                    </>
                   )
                 })
               }

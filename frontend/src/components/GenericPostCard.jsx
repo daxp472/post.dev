@@ -1,13 +1,39 @@
+import axios from "axios";
 import { Bitcoin, MessageSquare, ThumbsUp, Link2, Bookmark, BookmarkCheck } from "lucide-react"
 import { useState } from "react"
+import { LIKE_A_POST_URL, UNLIKE_A_POST_URL } from "../ApiRoutes";
 
-export default function GenericCardComponent({title, desc, image, likes_count, comments_count }) {
+export default function GenericCardComponent({title, desc, image, likes_count, comments_count, postID }) {
   const [liked, setLiked] = useState(false);
   const [bookmarked, setBookmarked] = useState(false);
   const [currentLikes, setCurrentLikes] = useState(likes_count);
 
-  const handleLikeToggle = () => {
+  const handleLikeToggle = async() => {
+    const uid = localStorage.getItem('POST.dev@accessToken');
     setLiked(!liked);
+    if(liked){
+      UNLIKE_A_POST_URL
+      try {
+        const data = await axios.patch(UNLIKE_A_POST_URL(postID),{},
+        { headers: { Authorization: uid } }
+        )        
+        console.log("working")
+      } catch (error) {
+          console.log(error)
+      }
+    }else {
+      console.log("unliked")
+      console.log(postID)
+      console.log(uid)
+      try {
+        const data = await axios.patch(LIKE_A_POST_URL(postID),{},
+        { headers: { Authorization: uid } }
+        )        
+        console.log("working")
+      } catch (error) {
+          console.log(error)
+      }
+    }
     setCurrentLikes(liked ? currentLikes - 1 : currentLikes + 1);
   };
 
