@@ -2,6 +2,7 @@ import axios from "axios";
 import { Bitcoin, MessageSquare, ThumbsUp, Link2, Bookmark, BookmarkCheck } from "lucide-react"
 import { useState } from "react"
 import { LIKE_A_POST_URL, UNLIKE_A_POST_URL } from "../ApiRoutes";
+import { FetchUserProfile } from "../utils/AuthFunctions";
 
 export default function GenericCardComponent({title, desc, image, likes_count, comments_count, postID }) {
   const [liked, setLiked] = useState(false);
@@ -20,6 +21,8 @@ export default function GenericCardComponent({title, desc, image, likes_count, c
         console.log("working")
       } catch (error) {
           console.log(error)
+      }finally{
+        await FetchUserProfile()
       }
     }else {
       console.log("unliked")
@@ -32,6 +35,8 @@ export default function GenericCardComponent({title, desc, image, likes_count, c
         console.log("working")
       } catch (error) {
           console.log(error)
+      } finally {
+        await FetchUserProfile()
       }
     }
     setCurrentLikes(liked ? currentLikes - 1 : currentLikes + 1);
