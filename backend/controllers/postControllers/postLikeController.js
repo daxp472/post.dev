@@ -110,7 +110,8 @@ export const decrementPostLike = async (req, res) => {
 
         let updatedPost = await Post.findById(postId)
 
-        if((await User.findOne({ _id: user_id })).likedPosts.includes(postId)) {
+        // Check if the user has liked the post before decrementing
+        if ((await User.findOne({ _id: user_id })).likedPosts.includes(postId)) {
             updatedPost = await Post.findByIdAndUpdate(
                 postId,
                 { $inc: { likes_count: -1 } },
@@ -119,7 +120,7 @@ export const decrementPostLike = async (req, res) => {
                     runValidators: true
                 }
             );
-    
+        
             // Double-check if update was successful
             if (!updatedPost) {
                 return res.status(500).json({
@@ -127,7 +128,6 @@ export const decrementPostLike = async (req, res) => {
                     message: 'Error updating like count'
                 });
             }
-
         }
         
         res.status(200).json({
