@@ -27,3 +27,8 @@ export const LIKE_A_POST_URL = (pid) => {
 export const UNLIKE_A_POST_URL = (pid) => {
     return `${import.meta.env.VITE_API_BASE_URL}api/posts/${pid}/unlike`
 }
+
+
+export const ADD_NEW_COMMENT = (pid) => {
+    return `${import.meta.env.VITE_API_BASE_URL}api/posts/${pid}/comments`
+}

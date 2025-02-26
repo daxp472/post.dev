@@ -6,15 +6,23 @@ export const addComment = async (req, res) => {
         const { postId } = req.params;
         const { user_id, content } = req.body;
 
-        // Validate required fields
-        if (!user_id || !content) {
+        // Validate required fields with more robust checks
+        if (!user_id || typeof user_id !== 'string' || user_id.trim() === '') {
             return res.status(400).json({
                 success: false,
-                message: "Missing required fields",
+                message: "Invalid or missing user ID",
                 details: {
-                    user_id: user_id ? "✓" : "✗ required",
+                    user_id: user_id ? "✗ invalid" : "✗ required",
                     content: content ? "✓" : "✗ required"
                 },
+                timestamp: Date.now()
+            });
+        }
+
+        if (!content || typeof content !== 'string' || content.trim() === '') {
+            return res.status(400).json({
+                success: false,
+                message: "Invalid or missing comment content",
                 timestamp: Date.now()
             });
         }
@@ -29,8 +37,11 @@ export const addComment = async (req, res) => {
             });
         }
 
-        // Add new comment
-        post.comments.push({ user_id, content });
+        // Add new comment with trimmed values
+        post.comments.push({ 
+            user_id: user_id.trim(), 
+            content: content.trim() 
+        });
         await post.save();
 
         res.status(201).json({

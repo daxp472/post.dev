@@ -14,6 +14,7 @@ function App() {
   const [isLoading, setIsLoading] = useState(true);
   const [userPersonalData, setUserPersonalData] = useState(null);
   const [userLikedPosts, setUserLikedPosts] = useState([]);
+  const [isUserLogiedin, setIsUserLogiedin] = useState(false);
   const fetchInitailData = useCallback(
     async() => {
       const ResponseData = await axios.get(GET_ALL_POST_URL)
@@ -24,7 +25,12 @@ function App() {
   )
   
   const getUserStoredData = async ()=> {
-    setUserPersonalData(JSON.parse((await UserProfileStorageGetter("postDevUserConfigs")).data))
+    try {
+      setUserPersonalData(JSON.parse((await UserProfileStorageGetter("postDevUserConfigs")).data))
+      setIsUserLogiedin(true);
+    } catch (error) {
+      setIsUserLogiedin(false);
+    }
   }
 
   useEffect(()=>{
