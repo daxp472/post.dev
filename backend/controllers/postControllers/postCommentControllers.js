@@ -37,24 +37,30 @@ export const addComment = async (req, res) => {
             });
         }
 
-        // Add new comment with trimmed values
+        // Normalize user_id to ensure it's a valid string
+        const normalizedUserId = user_id.trim();
+
+        // Add new comment with normalized user ID
         post.comments.push({ 
-            user_id: user_id.trim(), 
+            user_id: normalizedUserId, 
             content: content.trim() 
         });
-        await post.save();
+        
+        // Save the post with the new comment
+        const updatedPost = await post.save();
 
         res.status(201).json({
             success: true,
             message: "Comment added successfully",
-            data: post.comments[post.comments.length - 1],
+            data: updatedPost.comments[updatedPost.comments.length - 1],
             timestamp: Date.now()
         });
     } catch (error) {
+        console.error("Comment addition error:", error);
         res.status(500).json({
             success: false,
             message: "Error adding comment",
-            error: error.message,
+            error: error.message || "Unknown error occurred",
             timestamp: Date.now()
         });
     }

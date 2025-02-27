@@ -14,7 +14,7 @@ import { MdModeEditOutline } from 'react-icons/md';
 import { BsImage } from 'react-icons/bs';
 import { UploadPicture } from '../utils/CloudinaryHandlers';
 import LoaderwaveComponent from './Loaderwave';
-import { redirect } from 'react-router-dom';
+import { redirect, useNavigate } from 'react-router-dom';
 
 // Utility function for generating avatar
 const generateAvatar = (username) =>
@@ -64,6 +64,7 @@ const ProfileSectionComponent = () => {
   const [popupProfileImageEdit, setPopupProfileImageEdit] = useState(false);
   const [thumbnail, setThumbnail] = useState(null);
   const [uploadingInProgress, setUploadingInProgress] = useState(false);
+  const navigate = useNavigate()
 
   // Fetch User Profile
   const fetchUserProfile = useCallback(async () => {
@@ -171,8 +172,13 @@ const ProfileSectionComponent = () => {
     } catch (error) {
       console.error('Profile update error:', error);
     }
+    finally{
+      await FetchUserProfile()
+      navigate('/profile')
+    }
 
-    await FetchUserProfile()
+    
+
 
   };
 
@@ -188,6 +194,7 @@ const ProfileSectionComponent = () => {
     const uid = localStorage.getItem('POST.dev@accessToken');
     const profileImageURL = await UploadPicture(thumbnail);
     console.log(profileImageURL);
+    setUserData((prev) => ({...prev, avatar: profileImageURL}))
     try {
       await axios.put(
         UPDATE_USER_PROFILE_URL(uid),

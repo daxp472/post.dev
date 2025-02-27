@@ -117,7 +117,7 @@ const CommentReplyBox = ({postID}) => {
 }
 
 
-const PostCommentPopUp = ({postID}) => {
+const PostCommentPopUp = ({postID, CommentModelStateSetter}) => {
 
 
 
@@ -142,7 +142,7 @@ const PostCommentPopUp = ({postID}) => {
             whileTap={{ scale: 0.95 }}
             className="text-gray-400 hover:text-white"
           >
-            <X className="w-6 h-6" />
+            <X className="w-6 h-6" onClick={() => CommentModelStateSetter(false)}/>
           </motion.button>
         </div>
 

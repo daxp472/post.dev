@@ -56,7 +56,7 @@ export default function GenericCardComponent({title, desc, image, likes_count, c
 
       {/* Post Comment Model */}
       {openPostCommentModel && (
-        <PostCommentPopUp postID={postID} />
+        <PostCommentPopUp postID={postID} CommentModelStateSetter={setOpenPostCommentModel} />
       )}
 
       <div className="p-4 pb-2">
