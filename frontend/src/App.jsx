@@ -83,6 +83,7 @@ function App() {
                       postID={post._id}
                       key={index}
                       isLiked={isliked}
+                      user_image={post.user_image}
                     />
                     </>
                   )

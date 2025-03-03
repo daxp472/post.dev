@@ -203,7 +203,7 @@ const ProfileSectionComponent = () => {
         },
         { headers: { Authorization: uid } }
       );
-
+      
       await FetchUserProfile()
       toast("Profile Image Updated Successfully", {
         style: {

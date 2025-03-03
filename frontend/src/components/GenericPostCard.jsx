@@ -5,7 +5,7 @@ import { LIKE_A_POST_URL, UNLIKE_A_POST_URL } from "../ApiRoutes";
 import { FetchUserProfile } from "../utils/AuthFunctions";
 import PostCommentPopUp from "./PostCommentPopUp";
 
-export default function GenericCardComponent({title, desc, image, likes_count, comments_count, postID, isLiked=false }) {
+export default function GenericCardComponent({title, desc, image, likes_count, comments_count, postID, user_image, isLiked=false }) {
   const [liked, setLiked] = useState(isLiked);
   const [bookmarked, setBookmarked] = useState(false);
   const [currentLikes, setCurrentLikes] = useState(likes_count);
@@ -61,8 +61,8 @@ export default function GenericCardComponent({title, desc, image, likes_count, c
 
       <div className="p-4 pb-2">
         <div className="flex items-center gap-3">
-          <div className="rounded-full bg-gradient-to-br from-orange-500 to-orange-600 p-2.5 shadow-md group-hover:scale-105 transition-transform">
-            <Bitcoin className="h-6 w-6 text-white" />
+          <div className="rounded-full bg-gradient-to-br from-orange-500 to-orange-600 shadow-md group-hover:scale-105 transition-transform">
+            <img src={user_image} alt="" className="w-14 aspect-square"/>
           </div>
           <div className="space-y-1 flex-grow">
             <h3 className="font-bold text-lg leading-tight line-clamp-2 min-h-[36px] text-zinc-100 group-hover:text-white transition-colors">{title}</h3>

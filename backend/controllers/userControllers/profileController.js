@@ -1,4 +1,5 @@
 import User from "../../models/user.model.js";
+import { updateUserImageInPosts } from "../../utils/ChangePostProfileImge.js";
 
 // Get user profile by ID
 export const getProfileById = async (req, res) => {
@@ -108,7 +109,10 @@ export const updateProfile = async (req, res) => {
         if (title) user.title = title;
         if (bio) user.bio = bio;
         if (visibility) user.visibility = visibility;
-        if (profileimage) user.avatar = profileimage;
+        if (profileimage) {
+            user.avatar = profileimage;
+            updateUserImageInPosts(req.params.uid, profileimage);
+        }
 
         await user.save();
 
