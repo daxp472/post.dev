@@ -75,7 +75,7 @@ const UserPostContainer = ({ Posts, Refresher }) => {
                                 <>  
                                     
 
-                                    {Posts.map(post => (
+                                    {Posts.map((post, index) => (
                                         <div key={post._id} className="relative">
                                             <div className="" >
                                                 <GenericCardComponent
@@ -84,6 +84,9 @@ const UserPostContainer = ({ Posts, Refresher }) => {
                                                     image={post.image}
                                                     likes_count={post.likes_count}
                                                     comments_count={post.comments}
+                                                    postID={post._id}
+                                                    key={index}
+                                                    user_image={post.user_image}
                                                 />
                                             </div>
                                             {
