@@ -61,7 +61,7 @@ function App() {
             :
             (<div className="w-full max-md:pb-[95px]  grid grid-cols-4 p-5 gap-10 max-[1760px]:grid-cols-3 max-[1345px]:grid-cols-2 max-[810px]:grid-cols-1 max-md:gap-5">
               {
-                Initialdata.map((post, index)=>{
+                [...Initialdata.reverse()].map((post, index)=>{
                   let isliked = false;
                   try {
                     if(userPersonalData.likedPosts.map((post)=>post._id).includes(post._id)){

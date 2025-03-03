@@ -58,7 +58,7 @@ export const createNewPost = async (req, res) => {
             });
         }
 
-        const newPost = await Post.create({ user_id, title, content, tags, image });
+        const newPost = await Post.create({ user_id, title, content, tags, image, user_image: await (await User.findById(user_id)).avatar });
 
         // After creating the new post
         await User.findByIdAndUpdate(
