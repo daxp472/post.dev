@@ -1,6 +1,6 @@
 import express from 'express';
 import { loginUser, newUser } from '../controllers/userControllers/authController.js';
-import { getCurrentUserProfile, getProfileById, updateProfile } from '../controllers/userControllers/profileController.js';
+import { getCurrentUserProfile, getProfileById, getProfileByIdWithPosts, updateProfile } from '../controllers/userControllers/profileController.js';
 import { addNewFollowing, followUser, removeFollowing, unfollowUser } from '../controllers/userControllers/connectivityController.js';
 import { checkTokenExpiration } from '../middleware/authMiddleware.js';
 
