@@ -10,7 +10,7 @@ const userRoutes = express.Router();
 userRoutes.post('/register/newuser', newUser)
 userRoutes.post('/login', loginUser);
 
-userRoutes.get('/profile/details/:uid', getProfileByIdWithPosts);
+userRoutes.get('/:uid/profile/full', getProfileByIdWithPosts);
 
 userRoutes.use(checkTokenExpiration)
 userRoutes.get('/:uid/profile', getProfileById);
