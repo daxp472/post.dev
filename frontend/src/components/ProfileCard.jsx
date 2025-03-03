@@ -3,28 +3,37 @@ import { FaTwitter, FaGithub, FaGlobe } from 'react-icons/fa';
 import { MdEmail } from 'react-icons/md';
 import { UserProfileStorageGetter } from '../utils/localStorageEncrypter';
 
-const ProfileCard = () => {
+const ProfileCard = ({ProfileDetails=null}) => {
 
     const [ProfileData, setProfileData] = useState({
         username : "",
         fullName : "",
         followersCount : 0,
         followingCount : 0,
-        title : "",
-        bio : "",
+        title : "No Title Yet",
+        bio : "No Bio Avaliable",
         email : ""
 
     });
 
     useEffect(()=>{
         (async()=>{
-            const serverResponse = await UserProfileStorageGetter("postDevUserConfigs");
-            const parsedData = JSON.parse(serverResponse.data);
-            console.log(parsedData)
-            setProfileData(parsedData);
-            console.log(parsedData)
+            
+            // console.log(parsedData)
+            if(ProfileDetails){
+              setProfileData(prevData => ({...prevData, ...ProfileDetails, fullName: `${ProfileDetails.firstname} ${ProfileDetails.lastname}`}))
+              // console.log("end here")
+            }else{
+              const serverResponse = await UserProfileStorageGetter("postDevUserConfigs");
+              const parsedData = JSON.parse(serverResponse.data);
+              setProfileData(parsedData);
+            }
+
+            console.log(`ProfileDetails`)
+            console.log(ProfileDetails)
+            console.log("ProfileDetailsendds")
         })()
-    }, [])
+    }, [ProfileDetails])
 
 
     return (

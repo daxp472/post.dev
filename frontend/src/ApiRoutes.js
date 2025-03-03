@@ -35,5 +35,6 @@ export const ADD_NEW_COMMENT = (pid) => {
 
 
 export const GET_USER_PROFILE_DETAILS = (uid) => {
-    return `${import.meta.env.VITE_API_BASE_URL}api/profile/details/${uid}`
+    // return `${import.meta.env.VITE_API_BASE_URL}api/profile/details/${uid}`
+    return `${import.meta.env.VITE_API_BASE_URL}api/users/${uid}/profile/full`
 }

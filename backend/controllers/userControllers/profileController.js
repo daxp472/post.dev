@@ -42,8 +42,16 @@ export const getProfileById = async (req, res) => {
 
 export const getProfileByIdWithPosts = async (req, res) => {
     try {
-        const userId = req.params.uid;
-        const user = await User.findById(userId);
+        // Using the Firebase UID which is stored as _id in MongoDB
+        const firebaseUid = req.params.uid;
+        const user = await User.findById(firebaseUid)
+            .populate('likedPosts')
+            .populate('followers')
+            .populate('following')
+            .populate({
+                path: 'posts', // Assuming posts is an array of Post objects
+                model: 'Post'  // Ensure to replace 'Post' with the actual model name if different
+            });
 
         if (!user) {
             return res.status(404).json({
@@ -52,12 +60,26 @@ export const getProfileByIdWithPosts = async (req, res) => {
             });
         }
 
-        // Return public profile data
         return res.status(200).json({
             success: true,
             data: {
-                user
-            }
+                id: user._id,
+                username: user.username,
+                email: user.email,
+                firstname: user.firstname,
+                lastname: user.lastname,
+                title: user.title,
+                bio: user.bio,
+                avatar: user.avatar,
+                accountType: user.accountType,
+                visibility: user.visibility,
+                status: user.status,
+                language: user.language,
+                createdAt: user.createdAt,
+                updatedAt: user.updatedAt,
+                posts: user.posts, // Include posts in the response
+                ...user._doc
+            },
         });
     } catch (error) {
         return res.status(500).json({
