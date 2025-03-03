@@ -5,7 +5,7 @@ import ProfileError from '../AdditionalNecessaryElements/ProfileError';
 import Sidebar from '../components/SidebarComponent';
 import Navbar from '../components/Navbar';
 import { UserProfileStorageGetter } from '../utils/localStorageEncrypter';
-import { GET_PROFILE_BY_ID_URL } from '../ApiRoutes';
+import { GET_PROFILE_BY_ID_URL, GET_USER_PROFILE_DETAILS } from '../ApiRoutes';
 import axios from 'axios';
 
 const UserProfileDetails = () => {
@@ -19,7 +19,7 @@ const UserProfileDetails = () => {
             const parsedData = JSON.parse(serverResponse.data);
             console.log(parsedData)
             console.log("asdfdsfafds")
-            const userreesponse = await axios.get(GET_PROFILE_BY_ID_URL("kKqWdPHv8fhXObJEn9y8DILsYPo1"))
+            const userreesponse = await axios.get(GET_USER_PROFILE_DETAILS("kKqWdPHv8fhXObJEn9y8DILsYPo1"))
             console.log(userreesponse)
             
             setProfileData(parsedData); // Update ProfileData with fresh data

@@ -10,9 +10,10 @@ const userRoutes = express.Router();
 userRoutes.post('/register/newuser', newUser)
 userRoutes.post('/login', loginUser);
 
+userRoutes.get('/profile/details/:uid', getProfileByIdWithPosts);
 
-userRoutes.get('/:uid/profile', getProfileById);
 userRoutes.use(checkTokenExpiration)
+userRoutes.get('/:uid/profile', getProfileById);
 userRoutes.put('/:uid/profile/update', updateProfile);
 userRoutes.get('/:uid/profile/me', getCurrentUserProfile);
 

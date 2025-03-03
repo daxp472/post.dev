@@ -40,6 +40,33 @@ export const getProfileById = async (req, res) => {
     }
 };
 
+export const getProfileByIdWithPosts = async (req, res) => {
+    try {
+        const userId = req.params.uid;
+        const user = await User.findById(userId);
+
+        if (!user) {
+            return res.status(404).json({
+                success: false,
+                message: "User not found"
+            });
+        }
+
+        // Return public profile data
+        return res.status(200).json({
+            success: true,
+            data: {
+                user
+            }
+        });
+    } catch (error) {
+        return res.status(500).json({
+            success: false,
+            message: error.message
+        });
+    }
+}
+
 // Get current user's full profile
 export const getCurrentUserProfile = async (req, res) => {
     try {

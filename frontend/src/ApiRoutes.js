@@ -32,3 +32,8 @@ export const UNLIKE_A_POST_URL = (pid) => {
 export const ADD_NEW_COMMENT = (pid) => {
     return `${import.meta.env.VITE_API_BASE_URL}api/posts/${pid}/comments`
 }
+
+
+export const GET_USER_PROFILE_DETAILS = (uid) => {
+    return `${import.meta.env.VITE_API_BASE_URL}api/profile/details/${uid}`
+}
