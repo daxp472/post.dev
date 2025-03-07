@@ -18,3 +18,26 @@ export const UPLOAD_POST_URL = `${import.meta.env.VITE_API_BASE_URL}api/posts/ne
 export const DELETE_POST_URL = (pid) => {
     return `${import.meta.env.VITE_API_BASE_URL}api/posts/deletePost/${pid}`
 }
+
+export const LIKE_A_POST_URL = (pid) => {
+    return `${import.meta.env.VITE_API_BASE_URL}api/posts/${pid}/like`
+}
+
+
+export const UNLIKE_A_POST_URL = (pid) => {
+    return `${import.meta.env.VITE_API_BASE_URL}api/posts/${pid}/unlike`
+}
+
+
+export const ADD_NEW_COMMENT = (pid) => {
+    return `${import.meta.env.VITE_API_BASE_URL}api/posts/${pid}/comments`
+}
+
+
+export const GET_USER_PROFILE_DETAILS = (uid) => {
+    return `${import.meta.env.VITE_API_BASE_URL}api/users/${uid}/profile/full`
+}
+
+export const GET_ALL_POST_COMMENTS = (pid) => {
+    return `${import.meta.env.VITE_API_BASE_URL}api/posts/${pid}/comments`
+}

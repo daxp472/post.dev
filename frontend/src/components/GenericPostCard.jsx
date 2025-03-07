@@ -1,14 +1,50 @@
+import axios from "axios";
 import { Bitcoin, MessageSquare, ThumbsUp, Link2, Bookmark, BookmarkCheck } from "lucide-react"
 import { useState } from "react"
+import { LIKE_A_POST_URL, UNLIKE_A_POST_URL } from "../ApiRoutes";
+import { FetchUserProfile } from "../utils/AuthFunctions";
+import PostCommentPopUp from "./PostCommentPopUp";
 
-export default function GenericCardComponent({title, desc, image, likes_count, comments_count }) {
-  const [liked, setLiked] = useState(false);
+export default function GenericCardComponent({title, desc, image, likes_count, comments_count, postID, user_image, isLiked=false }) {
+  const [liked, setLiked] = useState(isLiked);
   const [bookmarked, setBookmarked] = useState(false);
   const [currentLikes, setCurrentLikes] = useState(likes_count);
+  const [openPostCommentModel, setOpenPostCommentModel] = useState(false);
 
-  const handleLikeToggle = () => {
+
+
+  const handleLikeToggle = async() => {
+    const uid = localStorage.getItem('POST.dev@accessToken');
     setLiked(!liked);
     setCurrentLikes(liked ? currentLikes - 1 : currentLikes + 1);
+    if(liked){
+      UNLIKE_A_POST_URL
+      try {
+        const data = await axios.patch(UNLIKE_A_POST_URL(postID),{},
+        { headers: { Authorization: uid } }
+        )        
+        console.log("working")
+      } catch (error) {
+          console.log(error)
+      }finally{
+        await FetchUserProfile()
+      }
+    }else {
+      console.log("unliked")
+      console.log(postID)
+      console.log(uid)
+      try {
+        const data = await axios.patch(LIKE_A_POST_URL(postID),{},
+        { headers: { Authorization: uid } }
+        )        
+        console.log("working")
+      } catch (error) {
+          console.log(error)
+      } finally {
+        await FetchUserProfile()
+      }
+    }
+    
   };
 
   const handleBookmarkToggle = () => {
@@ -17,10 +53,16 @@ export default function GenericCardComponent({title, desc, image, likes_count, c
 
   return (
     <div className="min-w-[350px] w-full overflow-hidden bg-zinc-900 text-white border border-zinc-800 rounded-xl shadow-2xl transition-all duration-300 hover:shadow-lg hover:border-zinc-700 group">
+
+      {/* Post Comment Model */}
+      {openPostCommentModel && (
+        <PostCommentPopUp postID={postID} CommentModelStateSetter={setOpenPostCommentModel} />
+      )}
+
       <div className="p-4 pb-2">
         <div className="flex items-center gap-3">
-          <div className="rounded-full bg-gradient-to-br from-orange-500 to-orange-600 p-2.5 shadow-md group-hover:scale-105 transition-transform">
-            <Bitcoin className="h-6 w-6 text-white" />
+          <div className="rounded-full bg-gradient-to-br from-orange-500 to-orange-600 shadow-md group-hover:scale-105 transition-transform">
+            <img src={user_image} alt="" className="w-14 aspect-square rounded-full h-full object-cover"/>
           </div>
           <div className="space-y-1 flex-grow">
             <h3 className="font-bold text-lg leading-tight line-clamp-2 min-h-[36px] text-zinc-100 group-hover:text-white transition-colors">{title}</h3>
@@ -57,7 +99,7 @@ export default function GenericCardComponent({title, desc, image, likes_count, c
             <span className="text-xs font-medium">{currentLikes}</span>
           </button>
           <button className="flex items-center gap-1.5 text-zinc-400 hover:text-white transition-colors">
-            <MessageSquare className="h-4 w-4" />
+            <MessageSquare className="h-4 w-4" onClick={() => setOpenPostCommentModel(true)} />
             <span className="text-xs font-medium">{comments_count}</span>
           </button>
         </div>

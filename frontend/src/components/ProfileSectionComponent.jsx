@@ -10,6 +10,11 @@ import { UserProfileStorageGetter } from '../utils/localStorageEncrypter';
 import { UPDATE_USER_PROFILE_URL } from '../ApiRoutes';
 import Loader from './Loader';
 import { ToastContainer, toast } from 'react-toastify';
+import { MdModeEditOutline } from 'react-icons/md';
+import { BsImage } from 'react-icons/bs';
+import { UploadPicture } from '../utils/CloudinaryHandlers';
+import LoaderwaveComponent from './Loaderwave';
+import { redirect, useNavigate } from 'react-router-dom';
 
 // Utility function for generating avatar
 const generateAvatar = (username) =>
@@ -56,6 +61,10 @@ const ProfileSectionComponent = () => {
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [isLoggedIn, setisLoggedIn] = useState(false);
   const [isUpdatingProfile, setIsUpdatingProfile] = useState(false);
+  const [popupProfileImageEdit, setPopupProfileImageEdit] = useState(false);
+  const [thumbnail, setThumbnail] = useState(null);
+  const [uploadingInProgress, setUploadingInProgress] = useState(false);
+  const navigate = useNavigate()
 
   // Fetch User Profile
   const fetchUserProfile = useCallback(async () => {
@@ -148,28 +157,83 @@ const ProfileSectionComponent = () => {
 
       setIsEditModalOpen(false);
       setIsUpdatingProfile((prev) => !prev);
-      toast("Profile Updated Successfully", {style : {
-        backgroundColor: '#21212A',    // Dark background
-        color: '#fff',              // White text
-        borderRadius: '10px',       // Rounded corners
-        padding: '15px',            // Padding around toast
-        fontSize: '16px',           // Font size
-        boxShadow: '0 4px 6px rgba(0, 0, 0, 0.3)', // Add shadow for effect
-      }, progressStyle: {
-        background: '#4caf50', // Green progress bar for success
-      }
-    })
+      toast("Profile Updated Successfully", {
+        style: {
+          backgroundColor: '#21212A',    // Dark background
+          color: '#fff',              // White text
+          borderRadius: '10px',       // Rounded corners
+          padding: '15px',            // Padding around toast
+          fontSize: '16px',           // Font size
+          boxShadow: '0 4px 6px rgba(0, 0, 0, 0.3)', // Add shadow for effect
+        }, progressStyle: {
+          background: '#4caf50', // Green progress bar for success
+        }
+      })
     } catch (error) {
       console.error('Profile update error:', error);
     }
+    finally{
+      await FetchUserProfile()
+      navigate('/profile')
+    }
 
-    await FetchUserProfile()
+    
+
 
   };
 
+  const handleThumbnailChange = (e) => {
+    const file = e.target.files[0]
+    if (file) {
+      setThumbnail((file))
+    }
+  }
+
+  const UpdateUserProfile = async () => {
+    setUploadingInProgress(true);
+    const uid = localStorage.getItem('POST.dev@accessToken');
+    const profileImageURL = await UploadPicture(thumbnail);
+    console.log(profileImageURL);
+    setUserData((prev) => ({...prev, avatar: profileImageURL}))
+    try {
+      await axios.put(
+        UPDATE_USER_PROFILE_URL(uid),
+        {
+          profileimage: profileImageURL
+        },
+        { headers: { Authorization: uid } }
+      );
+      
+      await FetchUserProfile()
+      toast("Profile Image Updated Successfully", {
+        style: {
+          backgroundColor: '#21212A',    // Dark background
+          color: '#fff',              // White text
+          borderRadius: '10px',       // Rounded corners
+          padding: '15px',            // Padding around toast
+          fontSize: '16px',           // Font size
+          boxShadow: '0 4px 6px rgba(0, 0, 0, 0.3)', // Add shadow for effect
+        }, progressStyle: {
+          background: '#4caf50', // Green progress bar for success
+        }
+      })
+
+    } catch (error) {
+      console.log(error);
+    } finally {
+      
+      setPopupProfileImageEdit(false);
+      setUploadingInProgress(false);
+      redirect('/profile')
+    }
+
+
+  }
+
   // Initial Data Fetch
   useEffect(() => {
-    fetchUserProfile();
+    (async()=>await fetchUserProfile())();
+    console.log(userData)
   }, [fetchUserProfile]);
 
   // Render Loading State
@@ -191,6 +255,54 @@ const ProfileSectionComponent = () => {
         />
       )}
 
+      {
+        (popupProfileImageEdit && (
+          <>
+            <div className="w-full h-full absolute top-0 left-0 z-50 flex justify-center items-center backdrop-blur-[2px]">
+              {(uploadingInProgress) ?
+                (
+                  <div className="flex  flex-col gap-3">
+                    <LoaderwaveComponent additionalStyling={"bg-red-600 w-[450px]"} />
+                    <p className='text-center'>Updating...</p>
+                  </div>
+                ) :
+                (
+                  <div className="bg-gray-700 p-10 rounded-2xl">
+                    <div className="relative max-md:w-full mb-6 rounded-xl  p-8 shadow-lg transition-all hover:shadow-xl">
+                      <label className="flex cursor-pointer flex-col items-center justify-center">
+                        <input type="file" className="hidden" accept="image/*" onChange={handleThumbnailChange} />
+                        {thumbnail ? (
+                          <img src={URL.createObjectURL(thumbnail)} alt="Thumbnail" className="h-48 w-full rounded-lg object-cover aspect-square overflow-hidden" />
+                        ) : (
+                          <>
+                            <div className="mb-3 rounded-lg bg-zinc-700/50 p-4 transition-colors hover:bg-zinc-700 aspect-square overflow-hidden">
+                              <BsImage className="h-8 w-8 text-zinc-300" />
+                            </div>
+                            <span className="text-xl font-semibold text-white">Drop your thumbnail here</span>
+                            <p className="mt-2 text-sm text-zinc-400">or click to browse</p>
+                          </>
+                        )}
+                      </label>
+                    </div>
+                    <div className="options-container flex justify-between gap-5">
+                      <button
+                        onClick={UpdateUserProfile}
+                        className="py-2 px-5 w-full text-lg bg-blue-600 cursor-pointer shadow-2xl shadow-black rounded-full">
+                        Update
+                      </button>
+                      <button
+                        onClick={() => setPopupProfileImageEdit(false)}
+                        className="py-2 px-5 w-full text-lg bg-red-600 cursor-pointer shadow-2xl shadow-black rounded-full">
+                        Cancel
+                      </button>
+                    </div>
+                  </div>
+                )}
+            </div>
+          </>
+        ))
+      }
+
       <div className={`container  w-full px-4 ${(!isLoggedIn) ? 'hidden' : 'block'}`}>
         <div className="bg-[#1f1f28] w-full border-gray-700 rounded-3xl shadow-2xl overflow-hidden transform transition-all duration-300 hover:scale-[1.02]">
           <div className="relative">
@@ -201,10 +313,13 @@ const ProfileSectionComponent = () => {
             <div className="p-6 md:p-10 relative z-10 text-center">
               {/* Profile Header with Image and Basic Info */}
               <div className="flex flex-col items-center mb-6">
-                <div className="relative mb-4">
-                  <div className="w-40 h-40 md:w-48 md:h-48 rounded-full overflow-hidden border-4 border-gray-700 shadow-lg transform transition-transform duration-300 hover:scale-105">
+                <div className="relative mb-4 ">
+                  <div className="edit-icon-container border border-gray-500 p-2 text-2xl w-fit rounded-full absolute bottom-0 right-0 z-30 backdrop-blur-lg cursor-pointer" onClick={() => setPopupProfileImageEdit(true)}>
+                    <MdModeEditOutline />
+                  </div>
+                  <div className=" w-40 h-40 md:w-48 md:h-48 rounded-full overflow-hidden border-4 border-gray-700 shadow-lg transform transition-transform duration-300 hover:scale-105">
                     <img
-                      src={(!userData.avatar)? userData.avatar : "https://cdn-icons-png.flaticon.com/512/149/149071.png"}
+                      src={(userData.avatar) ? userData.avatar : "https://cdn-icons-png.flaticon.com/512/149/149071.png"}
                       alt={`Profile of ${userData?.fullName || 'User'}`}
                       className="w-full h-full object-cover"
                       onError={(e) => { e.target.src = '/default-avatar.png' }}
@@ -339,16 +454,16 @@ const ProfileSectionComponent = () => {
         {/* Edit Profile Modal */}
         {isEditModalOpen && (
           <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-            <div className={`bg-[#22222C] rounded-xl w-full max-w-md mx-4 p-6 max-h-[90vh] overflow-y-auto ${(isUpdatingProfile)?"w-fit aspect-square flex items-center justify-center":""}`}>
+            <div className={`bg-[#22222C] rounded-xl w-full max-w-md mx-4 p-6 max-h-[90vh] overflow-y-auto ${(isUpdatingProfile) ? "w-fit aspect-square flex items-center justify-center" : ""}`}>
               {
-                (isUpdatingProfile) ? 
+                (isUpdatingProfile) ?
                   (
                     <div className='flex flex-col gap-3 items-center'>
                       <Loader />
                       <p className="animate-pulse text-gray-300">Updating</p>
                     </div>
                   )
-                :
+                  :
                   (
                     <>
 

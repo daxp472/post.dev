@@ -1,7 +1,7 @@
 import axios from "axios";
 import { RemoveData, UserProfileStorageGetter, UserProfileStorageSetter } from "./localStorageEncrypter";
 import { useUserStore } from "../store/useAuthStore";
-import { GET_ALL_USER_DETAILS, GET_PROFILE_BY_ID_URL, LOGIN_USER_URL } from "../ApiRoutes";
+import { GET_ALL_USER_DETAILS, GET_PROFILE_BY_ID_URL, GET_USER_PROFILE_DETAILS, LOGIN_USER_URL } from "../ApiRoutes";
 
 
 
@@ -34,6 +34,9 @@ export const FetchUserProfile = async () => {
             }
         );
         const profileData = response.data.data;
+        console.log("working")
+        console.log(response.data.data.avatar)
+        console.log("work end")
 
         // Construct the new profile object
         const newProfile = {
@@ -89,4 +92,38 @@ export const Fetch_my_profile = async () => {
         return { ...error, status: 500 };
     }
 
+}
+
+
+
+export const FetchUserProfileDetailPage = async (username) => {
+    try {
+        const response = await axios.get(GET_USER_PROFILE_DETAILS(username))
+        const profileData = response.data.data;
+
+        // Construct the new profile object
+        const newProfile = {
+            username: profileData.username || '',
+            fullName: `${profileData.firstname || ''} ${profileData.lastname || ''}`.trim(),
+            email: profileData.email || '',
+            avatar: profileData.avatar || generateAvatar(profileData.username),
+            bio: profileData.bio || '',
+            title: profileData.title || '',
+            followersCount: profileData.followers_count || 0,
+            followingCount: profileData.following_count || 0,
+            socialLinks: {
+                twitter: profileData.socialLinks?.twitter || '',
+                github: profileData.socialLinks?.github || '',
+                portfolio: profileData.socialLinks?.portfolio || ''
+            },
+            ...profileData
+        };
+
+        // Return the new profile object with a status
+        return { ...newProfile, status: 201 };
+        
+    } catch (error) {
+        console.error('Profile fetch error:', error);
+        return { ...error, status: 500 };
+    }
 }

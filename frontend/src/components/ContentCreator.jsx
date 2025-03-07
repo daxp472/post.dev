@@ -56,11 +56,11 @@ export default function ContentEditor() {
         { headers: { Authorization: uid } }
       )
 
-      if (url) {
-        await FetchUserProfile()
-        setIsUploading(false)
-        navigate('/profile')
-      }
+      
+      await FetchUserProfile()
+      setIsUploading(false)
+      navigate('/profile')
+      
       setHeading("")
       setContent("")
       setTags("");

@@ -108,28 +108,23 @@ export const decrementPostLike = async (req, res) => {
             });
         }
 
-        let updatedPost = await Post.findById(postId)
-
-        if((await User.findOne({ _id: user_id })).likedPosts.includes(postId)) {
-            updatedPost = await Post.findByIdAndUpdate(
-                postId,
-                { $inc: { likes_count: -1 } },
-                { 
-                    new: true,
-                    runValidators: true
-                }
-            );
-    
-            // Double-check if update was successful
-            if (!updatedPost) {
-                return res.status(500).json({
-                    status: 'error',
-                    message: 'Error updating like count'
-                });
+        let updatedPost = await Post.findByIdAndUpdate(
+            postId,
+            { $inc: { likes_count: -1 } },
+            { 
+                new: true,
+                runValidators: true
             }
-
+        );
+    
+        // Double-check if update was successful
+        if (!updatedPost) {
+            return res.status(500).json({
+                status: 'error',
+                message: 'Error updating like count'
+            });
         }
-        
+
         res.status(200).json({
             status: 'success',
             data: {
@@ -145,3 +140,4 @@ export const decrementPostLike = async (req, res) => {
         });
     }
 };
+

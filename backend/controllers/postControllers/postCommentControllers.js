@@ -6,15 +6,23 @@ export const addComment = async (req, res) => {
         const { postId } = req.params;
         const { user_id, content } = req.body;
 
-        // Validate required fields
-        if (!user_id || !content) {
+        // Validate required fields with more robust checks
+        if (!user_id || typeof user_id !== 'string' || user_id.trim() === '') {
             return res.status(400).json({
                 success: false,
-                message: "Missing required fields",
+                message: "Invalid or missing user ID",
                 details: {
-                    user_id: user_id ? "✓" : "✗ required",
+                    user_id: user_id ? "✗ invalid" : "✗ required",
                     content: content ? "✓" : "✗ required"
                 },
+                timestamp: Date.now()
+            });
+        }
+
+        if (!content || typeof content !== 'string' || content.trim() === '') {
+            return res.status(400).json({
+                success: false,
+                message: "Invalid or missing comment content",
                 timestamp: Date.now()
             });
         }
@@ -29,21 +37,30 @@ export const addComment = async (req, res) => {
             });
         }
 
-        // Add new comment
-        post.comments.push({ user_id, content });
-        await post.save();
+        // Normalize user_id to ensure it's a valid string
+        const normalizedUserId = user_id.trim();
+
+        // Add new comment with normalized user ID
+        post.comments.push({ 
+            user_id: normalizedUserId, 
+            content: content.trim() 
+        });
+        
+        // Save the post with the new comment
+        const updatedPost = await post.save();
 
         res.status(201).json({
             success: true,
             message: "Comment added successfully",
-            data: post.comments[post.comments.length - 1],
+            data: updatedPost.comments[updatedPost.comments.length - 1],
             timestamp: Date.now()
         });
     } catch (error) {
+        console.error("Comment addition error:", error);
         res.status(500).json({
             success: false,
             message: "Error adding comment",
-            error: error.message,
+            error: error.message || "Unknown error occurred",
             timestamp: Date.now()
         });
     }

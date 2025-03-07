@@ -1,4 +1,5 @@
 import User from "../../models/user.model.js";
+import { updateUserImageInPosts } from "../../utils/ChangePostProfileImge.js";
 
 // Get user profile by ID
 export const getProfileById = async (req, res) => {
@@ -38,6 +39,61 @@ export const getProfileById = async (req, res) => {
         });
     }
 };
+
+export const getProfileByIdWithPosts = async (req, res) => {
+    try {
+        // Using the Firebase UID which is stored as _id in MongoDB
+        const firebaseUid = req.params.uid;
+        // console.log(await User.find({username : firebaseUid}))
+        const user = (await User.find({username : firebaseUid})
+            .populate('likedPosts')
+            .populate('followers')
+            .populate('following')
+            .populate({
+                path: 'posts', // Assuming posts is an array of Post objects
+                model: 'Post'  // Ensure to replace 'Post' with the actual model name if different
+            }))[0];
+
+        // console.log(user)
+
+        if (!user) {
+            return res.status(404).json({
+                success: false,
+                message: "User not found"
+            });
+        }
+
+        const finaldata = {
+            id: user._id,
+            username: user.username,
+            email: user.email,
+            firstname: user.firstname,
+            lastname: user.lastname,
+            title: user.title,
+            bio: user.bio,
+            avatar: user.avatar,
+            accountType: user.accountType,
+            visibility: user.visibility,
+            status: user.status,
+            language: user.language,
+            createdAt: user.createdAt,
+            updatedAt: user.updatedAt,
+            posts: user.posts, // Include posts in the response
+            ...user._doc
+        }
+
+
+        return res.status(200).json({
+            success: true,
+            data: finaldata,
+        });
+    } catch (error) {
+        return res.status(500).json({
+            success: false,
+            message: error.message
+        });
+    }
+}
 
 // Get current user's full profile
 export const getCurrentUserProfile = async (req, res) => {
@@ -92,7 +148,7 @@ export const getCurrentUserProfile = async (req, res) => {
 // Update user profile
 export const updateProfile = async (req, res) => {
     try {
-        const { firstname, lastname, title, bio, visibility } = req.body;
+        const { firstname, lastname, title, bio, visibility, profileimage } = req.body;
         const user = await User.findById(req.params.uid);
 
         if (!user) {
@@ -108,6 +164,10 @@ export const updateProfile = async (req, res) => {
         if (title) user.title = title;
         if (bio) user.bio = bio;
         if (visibility) user.visibility = visibility;
+        if (profileimage) {
+            user.avatar = profileimage;
+            updateUserImageInPosts(req.params.uid, profileimage);
+        }
 
         await user.save();
 
@@ -120,7 +180,8 @@ export const updateProfile = async (req, res) => {
                 lastname: user.lastname,
                 title: user.title,
                 bio: user.bio,
-                visibility: user.visibility
+                visibility: user.visibility,
+                avatar: user.avatar
             }
         });
     } catch (error) {
