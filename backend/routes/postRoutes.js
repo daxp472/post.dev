@@ -14,6 +14,7 @@ const postRoutes = express.Router();
 postRoutes.get("/", postRouteEntry);
 postRoutes.get("/allPosts", getAllPosts);
 
+postRoutes.get('/:postId/comments', getComments);
 
 postRoutes.use(checkTokenExpiration)
 
@@ -31,7 +32,6 @@ postRoutes.patch('/:postId/unbookmark', removeBookmark);
 
 //Comment related routes
 postRoutes.post('/:postId/comments', addComment);
-postRoutes.get('/:postId/comments', getComments);
 postRoutes.patch('/:postId/comments/:commentId', updateComment);
 postRoutes.delete('/:postId/comments/:commentId', deleteComment);
 

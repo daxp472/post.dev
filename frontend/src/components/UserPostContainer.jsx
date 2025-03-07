@@ -23,6 +23,12 @@ const UserPostContainer = ({ Posts, Refresher }) => {
     const [selectedPostId, setSelectedPostId] = useState(null);
     const [deletingPost, setDeletingPost] = useState(false);
 
+    useEffect(() => {
+        console.log('UserPostContainer received Posts:', Posts);
+        console.log('Posts type:', typeof Posts);
+        console.log('Posts is Array:', Array.isArray(Posts));
+    }, [Posts]);
+
     const toggleMenu = (postId) => {
         setSelectedPostId(postId);
         setMenuVisible(!menuVisible);
@@ -46,8 +52,10 @@ const UserPostContainer = ({ Posts, Refresher }) => {
         setDeletingPost((prev) => !prev);
     }
 
+    const safePosts = Array.isArray(Posts) ? Posts : [];
+
     return (
-        <div className="  flex items-center justify-center w-full">
+        <div className="flex items-center justify-center w-full">
             {
                 (deletingPost) && (
                     <div className="absolute w-full h-full text-2xl flex gap-2 flex-col z-50 text-white top-0 left-0 items-center justify-center backdrop-blur-sm">
@@ -69,24 +77,27 @@ const UserPostContainer = ({ Posts, Refresher }) => {
 
                         {
 
-                            ((Posts) ? Posts.length == 0 ? true : false : true) ?
+                            (safePosts.length === 0) ?
                                 <NoPostYet />
                                 :
-                                <>  
-                                    
+                                safePosts.map((post, index) => {
+                                    if (typeof post !== 'object' || post === null) {
+                                        console.warn('Invalid post object:', post);
+                                        return null;
+                                    }
 
-                                    {Posts.map((post, index) => (
-                                        <div key={post._id} className="relative">
+                                    return (
+                                        <div key={post._id || index} className="relative">
                                             <div className="" >
                                                 <GenericCardComponent
-                                                    title={post.title}
-                                                    desc={post.content}
-                                                    image={post.image}
-                                                    likes_count={post.likes_count}
-                                                    comments_count={post.comments}
-                                                    postID={post._id}
-                                                    key={index}
-                                                    user_image={post.user_image}
+                                                    title={post.title || ''}
+                                                    desc={post.content || ''}
+                                                    image={post.image || ''}
+                                                    likes_count={post.likes_count || 0}
+                                                    comments_count={post.comments || 0}
+                                                    postID={post._id || ''}
+                                                    key={post._id || index}
+                                                    user_image={post.user_image || ''}
                                                 />
                                             </div>
                                             {
@@ -112,10 +123,8 @@ const UserPostContainer = ({ Posts, Refresher }) => {
                                                 )}
                                             </div>
                                         </div>
-                                    ))}
-
-                                </>
-
+                                    );
+                                })
                         }
 
 

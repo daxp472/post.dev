@@ -1,8 +1,8 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { motion } from 'framer-motion';
 import { X, MessageCircle, Heart, Share2 } from 'lucide-react';
 import axios from 'axios';
-import { ADD_NEW_COMMENT } from '../ApiRoutes';
+import { ADD_NEW_COMMENT, GET_ALL_POST_COMMENTS } from '../ApiRoutes';
 
 
 const SingleComment = () => {
@@ -117,9 +117,19 @@ const CommentReplyBox = ({postID}) => {
 }
 
 
+
 const PostCommentPopUp = ({postID, CommentModelStateSetter}) => {
-
-
+  
+  
+      useEffect(()=>{
+        (async()=>{
+          const uid = localStorage.getItem("POST.dev@accessToken");
+          const ServerResponse = await axios.get(GET_ALL_POST_COMMENTS(postID), {}, 
+          { 
+              headers: { Authorization: uid } 
+          })
+        })()
+      }, [])
 
 
   return (
@@ -158,12 +168,12 @@ const PostCommentPopUp = ({postID, CommentModelStateSetter}) => {
         <div className="px-6 py-4">
           <div className="flex gap-3">
             <div className="flex-1">
-              <p className="text-gray-300">
+              {/* <p className="text-gray-300">
                 Just finished reading an amazing book on artificial intelligence and its impact on society.
                 The author presents some fascinating perspectives on how AI will reshape our future
                 workplace. What are your thoughts on AI's role in our daily lives? #AI #FutureOfWork
                 #TechTrends
-              </p>
+              </p> */}
               <div className="mt-2 text-sm text-gray-500">
                 Posted by @johndoe · 2h ago
               </div>

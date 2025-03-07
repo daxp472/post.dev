@@ -8,28 +8,35 @@ import { UserProfileStorageGetter } from '../utils/localStorageEncrypter';
 import { GET_PROFILE_BY_ID_URL, GET_USER_PROFILE_DETAILS } from '../ApiRoutes';
 import axios from 'axios';
 import { useParams } from 'react-router-dom';
+import { FetchUserProfileDetailPage } from '../utils/AuthFunctions';
 
 
 
 
 const UserProfileDetails = () => {
     const [userLogined, setUserLogined] = useState(false);
-    const [ProfileData, setProfileData] = useState({})
+    const [ProfileData, setProfileData] = useState({posts:[]})
     const [refreshCount, setRefreshCount] = useState(0);
+    const [userPosts, setUserPosts] = useState([]);
     const { username } = useParams()
 
     const GetProfileData = async() =>{
-        const userreesponse = await axios.get(GET_USER_PROFILE_DETAILS("kKqWdPHv8fhXObJEn9y8DILsYPo1"))
-        console.log(userreesponse.data.data.user)
-        console.log(userreesponse.data)
-        setProfileData(userreesponse.data.data);
+        try{
+            const data = await FetchUserProfileDetailPage(username);
+            setProfileData(data);
+            console.log("The Fetched Details ....")
+            // console.log(data.posts)
+            console.log(ProfileData)
+
+        }catch(error){
+            console.error('Error fetching profile data:', error)
+        }
+
     }
 
     useEffect(() => {
         (async () => {
-            
             GetProfileData()
-
         })();
     }, []); // This will trigger the effect whenever refreshCount changes
 
@@ -38,12 +45,13 @@ const UserProfileDetails = () => {
           <Sidebar />
           <div className="w-full">
             <Navbar />
-            <div className="flex overflow-y-scroll overflow-x-hidden max-h-full w-full p-5 items-start gap-5 max-[880px]:flex-col h-[calc(100vh-64px)] max-md:h-[calc(100vh-119px)] flex-col">
+            <div className="flex overflow-y-scroll overflow-x-hidden max-h-full w-full p-5 items-start gap-5 max-[880px]:flex-col h-[calc(100vh-64px)] max-md:h-[calc(100vh-119px)] ">
 
                 {
                     <>
                         <ProfileCard ProfileDetails = {ProfileData}  />
-                        {/* <UserPostContainer Posts = {ProfileData.posts} Refresher = {setRefreshCount} /> */}
+                        <UserPostContainer Posts = {ProfileData.posts} Refresher = {setRefreshCount} />
+                    
                     </> 
                 }
 

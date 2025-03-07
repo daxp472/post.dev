@@ -69,6 +69,7 @@ function App() {
                     }else{
                       isliked = false
                     }
+                    console.log(Initialdata)
                   } catch (error) {
                     
                   }
