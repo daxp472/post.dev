@@ -1,5 +1,5 @@
 import admin from "firebase-admin";
-import serviceAccount from "../config/firebaseConfig.js"; // Tera firebase config file
+import serviceAccount from "../config/firebaseConfig.js"; 
 
 admin.initializeApp({
     credential: admin.credential.cert(serviceAccount)

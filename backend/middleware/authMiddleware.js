@@ -46,5 +46,5 @@ export const checkTokenExpiration = async (req, res, next) => {
             message: "Authentication error",
             error: error.message,
         });
-    }
+    )}
 };
