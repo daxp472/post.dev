@@ -1,39 +1,50 @@
-import User from "../models/user.model.js";
 import { User_auth } from "../models/user_auth.model.js";
 
-
-export const checkTokenExpiration = async(req, res, next) => {
-    
+export const checkTokenExpiration = async (req, res, next) => {
     try {
-        const hashedToken = ( req.headers.authorization)
-        const currentTime = Date.now();
-        const expiration_time = (await User_auth.findOne({hashed_token : hashedToken})).expiration_time
-
-        req.params.userId = hashedToken;
-        console.log(hashedToken)
-        
-        // Compare the current time with the expiration time
-        if (currentTime > expiration_time) {
-            // If the token has expired, return an error response
-            res.status(401).json({
-                success: true,
-                is_logined : false,
-                message : "The token is not valid.",
-                current_time : currentTime,
-                expiration_time : expiration_time
-            })
-        } else {
-            // If the token is still valid, proceed to the next middleware or route handler
-            req.user = (await User_auth.findOne({hashed_token : hashedToken})).hashed_token
-            next();
+        // Token ko "Bearer <token>" format se parse karo
+        const token = req.headers.authorization?.split(" ")[1];
+        if (!token) {
+            return res.status(401).json({
+                success: false,
+                is_logined: false,
+                message: "No token provided",
+            });
         }
+
+        // Ek baar mein User_auth se pura document fetch karo
+        const userAuth = await User_auth.findOne({ hashed_token: token });
+        if (!userAuth) {
+            return res.status(401).json({
+                success: false,
+                is_logined: false,
+                message: "Invalid token",
+            });
+        }
+
+        const currentTime = Date.now();
+        const { expiration_time, userId } = userAuth; // Assume userId hai model mein
+
+        // Token expiration check
+        if (currentTime > expiration_time) {
+            return res.status(401).json({
+                success: false,
+                is_logined: false,
+                message: "The token has expired",
+                current_time: currentTime,
+                expiration_time: expiration_time,
+            });
+        }
+
+        // req.user mein user ID ya data daal do
+        req.user = { _id: userId, token: token }; // Adjust based on your needs
+        next();
     } catch (error) {
-        res.status(401).json({
+        res.status(50010.json({
             success: false,
-            is_logined : false,
-            message : "The token is not valid.",
-            error : error
-        })
+            is_logined: false,
+            message: "Authentication error",
+            error: error.message,
+        });
     }
 };
-
